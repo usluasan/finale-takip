@@ -15,6 +15,9 @@ Proje: Finale Yazılım Danışmanlık Ticaret Ltd. Şti. (iki şirket) için "F
    - Yalnızca şu durumlarda önce sor: kapsam belirsizse, geri alınması zor bir işse (veri silme/dönüştürme, geçmişi değiştirme), ya da yarım/test edilmemiş bir şeyi commit'lemek gerekiyorsa.
    - Her commit TEK bir konuyu içerir; ilgisiz değişiklikler ayrı commit olur. Kayıt dosyaları (madde 2) aynı commit'e girer.
    - Sürüm atlamasına ve etiketlemeye Claude karar verir ("Sürüm ve commit düzeni" bölümü).
+   - Hasan GitHub tarafını düşünmek istemiyor: commit, push, sürüm ve etiket işleri hatırlatılmadan yapılır.
+   - Her oturumun başında `git status` ve `git fetch` ile durumu kontrol et: commit'lenmemiş ya da push edilmemiş değişiklik (ör. Hasan'ın elle yaptığı düzenleme) varsa ne olduğunu söyle ve kayda al. Her turun sonunda çalışma klasörü temiz ve GitHub ile eşit olmalı; değilse nedenini yaz.
+   - Commit'ten önce `git diff --cached --stat` ile içeriğin mesajla uyuştuğunu doğrula.
 4. **Kapsam:** İşe başlamadan önce kapsam belirsizse çoktan seçmeli kısa sorular sor; netse hemen yap.
 5. **Güvenlik:** Parola, anahtar (`APP_KEY`, `ADMIN_KEY`), kişisel/mali veri, `veri/` klasörü ve `finale.db` repoya ASLA girmez (`.gitignore`'da kalır). Güvenlik açığı görürsen söyle.
 6. **Dürüstlük:** Test etmediğin şeyi "çalışıyor" deme. Neyin test edildiğini ve neyin edilmediğini açıkça yaz.

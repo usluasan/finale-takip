@@ -85,3 +85,7 @@ Yeni degisiklikler EN ALTA eklenir.
 [13 Ekim] Duzeltme: surum tablosu
   - Bir onceki kayitta "tablo duzeltildi" yazmistim ama duzeltme bir hata yuzunden dosyaya
     girmemisti. Simdi gercekten yapildi. Programda degisiklik yok, sadece belge.
+
+[13 Ekim] GitHub isleri otomatik
+  - Kural eklendi: Claude her oturum basinda deponun durumunu kontrol eder, her isin sonunda
+    degisiklikleri kendisi commit'leyip GitHub'a gonderir. Senin bir sey yapman gerekmez.
