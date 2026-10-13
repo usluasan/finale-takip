@@ -1,0 +1,45 @@
+FINALE TAKIBI - DEGISIKLIKLER (Hasan icin, okunabilir liste)
+============================================================
+Yeni degisiklikler EN ALTA eklenir.
+
+[06 Ekim 2026] Kredi takibi
+  - Kredi taksitleri takip ediliyor, her pazartesi odeme ozeti maili gidiyor.
+
+[Ekim 2026, Surum 37-49] Sirket geneli takip
+  - Gelen/giden fatura, nakit akisi, duzenli giderler, personel masraflari ve onay,
+    cariler, kar/zarar, KDV, iki sirket secimi, Ayarlar ve rol sistemi eklendi.
+
+[Surum 50] Takim lideri
+  - Takim lideri kendi ekibindeki 5 kisinin masrafini gorur, digerlerinin gormez.
+
+[Surum 51] Parola
+  - "Parolami unuttum", kullanici e-postasi ve parola degistirme eklendi.
+  - Not: otomatik mail gonderimi sayfadan yapilamiyor, simdilik elle gonderiliyor.
+
+[12 Ekim, Surum 52] Ozgecmisler ve Sozlesmeler
+  - Personel icin CV sekmesi: yukle, guncelle, sil, degisiklik gecmisi, Word/PDF onizleme.
+  - Sozlesmeler sekmesi: musteri ve tedarikci, bitis/yenileme uyarilari.
+
+[12 Ekim, Surum 53] Banka ve Kredi kartlari
+  - Banka hesaplari, ekstre yukleme, hareketler, faturayla eslestirme.
+  - Kredi kartlari ve ekstre donemleri.
+  - Henuz yapilmadi: banka bakiyesi ve kart odemeleri nakit akisina bagli degil.
+
+[13 Ekim, Surum 54] Telefon uyumu
+  - Dokunmasi kolay dugmeler, telefonda sayfa zoom yapmiyor.
+
+[13 Ekim, Surum 55] Telefon menusu
+  - Soldan acilan hamburger menu.
+
+[13 Ekim, Surum 56] Yeni gorunum
+  - Web'de de sol menu (acilip kapanir), renkli kartlar, ikonlu gruplu menu.
+
+[13 Ekim] Bagimsiz uygulama paketi
+  - Kendi sunucusu (Node), web ve masaustu (Electron) uygulamasi hazirlandi.
+  - Mevcut verin paketin icine aktarildi (12 kredi, 2 cari, 2 sirket, 2 kullanici).
+  - Claude ile fis/fatura okuma bu pakette yok, yerel OCR calisiyor.
+
+[13 Ekim] Degisiklik kaydi
+  - Bu iki kayit dosyasi (DEGISIKLIKLER.txt ve DEGISIKLIK_AI.txt) acildi.
+  - Karar: her degisiklikten sonra GitHub'a commit edilip edilmeyecegi sana sorulacak.
+    Onemli yerlerde surum kendiliginden kaydedilecek.

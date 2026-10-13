@@ -1,0 +1,15 @@
+{
+  "name": "finale-takibi",
+  "version": "1.0.0",
+  "description": "Finale Takibi masaüstü uygulaması",
+  "main": "main.js",
+  "scripts": { "start": "electron .", "dist": "electron-builder" },
+  "devDependencies": { "electron": "^33.0.0", "electron-builder": "^25.0.0" },
+  "build": {
+    "appId": "tr.com.finale.takibi",
+    "productName": "Finale Takibi",
+    "files": ["main.js", "setup.html", "icon.png"],
+    "win": { "target": "nsis", "icon": "icon.png" },
+    "mac": { "target": "dmg", "category": "public.app-category.finance" }
+  }
+}

@@ -1,0 +1,20 @@
+# FINALE TAKIBI - DEGISIKLIK KAYDI (YAPAY ZEKA ICIN, makine-okunur)
+# Format: her satir = ID | TARIH | SURUM | TUR | DOSYA/BOLUM | ETKI | NOT
+# TUR: FEAT=ozellik, FIX=hata, UI=gorunum, INFRA=altyapi, DATA=veri, DOC=belge
+# Kural: yeni kayit EN ALTA eklenir. Bu dosya ve DEGISIKLIKLER.txt her degisiklikte birlikte guncellenir.
+# Bagimlilik: kaynak sayfa tek dosya HTML (artifact index.html); web/index.html onun build ciktisidir (head+shim eklenir, xlsx yerel).
+# Test: Playwright + mock claude (t5.js) ; syntax: node --check (en buyuk <script>)
+C001 | 2026-10-06 | v36- | FEAT | index.html | kredi takibi, haftalik odeme maili (loans koleksiyonu) | planli gorev: pazartesi, huslu/sturhan/oyucesoy@finale.com.tr
+C002 | 2026-10 | v37-v49 | FEAT | index.html | sirket geneli: gelen/giden fatura, nakit akisi, duzenli gider, personel masraf+onay, cariler, K/Z, KDV, KPI, 2 sirket secici, Ayarlar, giris+roller | roller: sekme/kayit kapsami/sirket yetkisi/onay
+C003 | 2026-10 | v50 | FEAT | index.html | takim lideri kapsami (vis, team) | lider 5 kisinin masrafini gorur
+C004 | 2026-10 | v51 | FEAT | index.html | parolami unuttum, kullanici e-postasi, parola degistirme (#lg_fg,#pwbox,lgreq,pwsave) | otomatik mail sayfadan gonderilemez; elle M365 ile gonderildi
+C005 | 2026-10-12 | v52 | FEAT | index.html | personel Ozgecmisler sekmesi: yukle/guncelle/sil/log, Word+PDF onizleme (pdf.js, mammoth), cvblobs parcali base64 | assets Word kabul etmez
+C006 | 2026-10-12 | v52 | FEAT | index.html | Sozlesmeler sekmesi (musteri+tedarikci, baslangic/bitis/yenileme, tutar, dosya, uyari) | koleksiyon contracts
+C007 | 2026-10-12 | v53 | FEAT | index.html | Banka (hesap, ekstre yukle, hareket, kategori, fatura/masraf eslestirme, kredi taksit kontrolu) + Kredi kartlari (kart, ekstre donemi, ozet) | koleksiyonlar bankaccts,banktx,cards,cardtx ; banka/kk nakit akisina bagli DEGIL
+C008 | 2026-10-13 | v54 | UI | index.html CSS | mobil uyum: dokunma hedefleri, 16px input, form 2 sutun | 
+C009 | 2026-10-13 | v55 | UI | index.html (#mbar,nav,#mscrim) | mobil hamburger cekmece menu, gruplu | body.mnav
+C010 | 2026-10-13 | v56 | UI | index.html CSS | kenar menu (web+mobil, body.nclosed), renkli KPI kartlari, gradient baslik/dugme, ikonlar data-ic | nav .ng gruplari JS ile gizlenir
+C011 | 2026-10-13 | pkg1 | INFRA | finale-app/ | bagimsiz paket: server/server.js (node:sqlite, REST+SSE, APP_KEY/ADMIN_KEY cerez), web/shim.js (claude.use db/assets/downloads/user), desktop/ (Electron), import.js, Docker, baslat.bat/.sh | sample (Claude okuma) yok; veri/ icinde mevcut veri ice aktarildi
+C012 | 2026-10-13 | - | DATA | veri/finale.db | claude.ai DB'den ice aktarim: loans 12, parties 2, companies 2, appusers 2, settings 1, cvblobs 1 | invoices/expenses/vb. bos idi
+C013 | 2026-10-13 | - | DOC | OKU-BENI.md | kurulum: sunucu (Node 22.5+), masaustu (npm install; npm start; npm run dist) | Mac: Terminal, ./baslat.sh
+C014 | 2026-10-13 | - | DOC | DEGISIKLIK_AI.txt, DEGISIKLIKLER.txt | degisiklik kaydi sistemi kuruldu; kullanici istegi: her degisiklikten sonra GitHub commit sorulacak, gerekli gorulen yerde surum otomatik kaydedilecek | repo adi henuz bilinmiyor
