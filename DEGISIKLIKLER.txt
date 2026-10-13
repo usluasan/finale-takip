@@ -43,3 +43,14 @@ Yeni degisiklikler EN ALTA eklenir.
   - Bu iki kayit dosyasi (DEGISIKLIKLER.txt ve DEGISIKLIK_AI.txt) acildi.
   - Karar: her degisiklikten sonra GitHub'a commit edilip edilmeyecegi sana sorulacak.
     Onemli yerlerde surum kendiliginden kaydedilecek.
+
+[13 Ekim] GitHub deposu ve kalici kurallar
+  - Proje bilgisayarinda ~/Projects/finale-takip klasorune acildi, git deposu kuruldu.
+  - Zip'teki 28 dosyanin tamami ilk surum olarak kaydedildi. Veri ve anahtarlar depoya girmedi.
+  - CLAUDE.md eklendi: Claude'un her oturumda uyacagi kurallar (Turkce, iki kayit dosyasi,
+    commit sorma, guvenlik, durustluk).
+
+[13 Ekim] Build betigi
+  - build.py eklendi: kaynak sayfadan web/index.html dosyasini tek komutla uretir.
+    Komut (proje klasorunde): python3 build.py
+  - Kontrol edildi: betigin urettigi dosya, zip'ten gelen dosyayla birebir ayni.
