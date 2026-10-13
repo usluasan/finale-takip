@@ -109,3 +109,16 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [13 Ekim] Surum v0.2.0 Curie
   - Aktiviteler sekmesiyle birlikte surum v0.1.0 Heisenberg'den v0.2.0 Curie'ye cikti.
+
+[13 Ekim] Aktiviteler: faturalama tipi, efor statusu, is durumu ve is statusu (v0.3.0 Feynman)
+  - SAP'deki aktivite programindan ornek alindi. "Faturalanabilir" kutusu kalkti; yerine Faturalama tipi
+    geldi. Tipe gore Faturalama durumu (faturalanir / faturalanmaz) ve Faturalanmama nedeni sorulur.
+  - Efor statusu kendiliginden hesaplanir: Eforlanacak, Proje kapsaminda, Danismanda bekliyor,
+    Eforlanmayacak. Yalnizca onayli ve "Eforlanacak" kayitlar fatura taslagina girer.
+  - Is durumu ve Is statusu alanlari eklendi; "Iptal" secilince iptal nedeni zorunlu.
+  - Onay ayni kaldi. "Danismanda bekliyor" kayit, yonetici onaylayinca "Eforlanacak" olur.
+  - Listeye efor statusu filtresi, Excel'e yeni sutunlar eklendi. Projeye varsayilan faturalama tipi secilebilir.
+  - SENIN YAPMAN GEREKEN: Ayarlar > Faturalama tipleri'nde adlar "Tip 01 ... Tip 07" olarak duruyor
+    (SAP'deki adlari kodda yoktu). Gercek adlarini yaz. Ayarlar > Listeler'deki "Is durumlari" ve
+    "Is statuleri" de tahminimdir; kendi degerlerinizle degistir.
+  - Bos test veritabaninda denendi; gercek verinle denenmedi.
