@@ -106,3 +106,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - DIKKAT: Rolleri daha once Ayarlar'da duzenleyip kaydettiysen, Personel rolunde "Aktiviteler"
     sekmesini bir kez elle isaretlemen gerekir (Ayarlar > Roller). Yonetici icin kendiliginden acik.
   - Bos bir test veritabaninda denendi; senin gercek verinle ve claude.ai'daki canli sayfada denenmedi.
+
+[13 Ekim] Surum v0.2.0 Curie
+  - Aktiviteler sekmesiyle birlikte surum v0.1.0 Heisenberg'den v0.2.0 Curie'ye cikti.

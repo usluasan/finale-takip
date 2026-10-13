@@ -74,3 +74,35 @@ Veri (`veri/finale.db`) git'te olmadığı için sürüm değiştirmek veriyi ge
 |---|---|---|
 | `62ced6d` | C023 | Yalnızca kayıt dosyaları değişti; tablo düzeltmesi bir betik hatası yüzünden bu commit'e GİRMEDİ |
 | C024 commit'i (`git log --grep=C024`) | C024 | Commit tablosuna gerçek commit kodları yazıldı (C023'ün eksiğini tamamlar) |
+
+---
+
+## v0.2.0 Curie — 13 Ekim 2026
+
+Yeni modül: **Aktiviteler** (danışman efor girişi). claude.ai artifact'ı güncellenmedi; canlı sayfa hâlâ **sürüm 56**, bu sürüm yalnızca bağımsız uygulamada var.
+
+**İçerik**
+- Aktivite girişi: danışman, tarih, proje, tür, modül, talep no, çalışma yeri, saat, açıklama, faturalanabilir. Adam/gün = saat ÷ projenin "1 adam/gün kaç saat" değeri (varsayılan 8).
+- İç onay: onay yetkisi olmayan rolün girdiği kayıt "onay bekliyor" olur; yönetici onaylar, neden yazarak reddeder, onayı geri alır, hepsini birden onaylar.
+- Projeler: müşteri carisi, faturalama birimi (adam/gün, saat, faturalanmaz), birim ücret, para birimi, KDV, durum.
+- Faturalama: seçilen ayda proje bazında onaylı tutar; "Fatura taslağı oluştur" Giden faturalar'a numarasız kayıt açar ve aktiviteleri kilitler. Dövizli projede kur elle girilir, fatura TL yazılır.
+- Excel'e aktarma, Özet'te onay uyarısı, Ayarlar > Listeler'de aktivite türleri ve modüller.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `b97746c` | C027 | Aktiviteler sekmesi |
+| C028 commit'i (`git log --grep=C028`) | C028 | Sürüm v0.2.0 Curie — **`v0.2.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (boş test veritabanında): proje ve aktivite ekleme, doğrulamalar, personel girişi ve onay akışının tamamı, TL ve EUR fatura taslağı, taslak silinince aktivitenin serbest kalması, Excel içeriği, 18 sekmenin hatasız açılması, mobil genişlik.
+- Test edilmedi: gerçek veriyle açılış, claude.ai artifact'ı, ekip lideri kapsamı, birden çok şirket, Electron, Docker.
+
+**Bilinen eksikler**
+- Rolleri Ayarlar'da daha önce kaydettiyseniz "Aktiviteler" sekmesi yönetici dışındaki rollere elle işaretlenmelidir.
+- Onay ve kilit yalnızca arayüzde; sunucuda yetki kontrolü yok (v0.1.0'daki genel eksikle aynı).
+- Fatura miktarı 2 ondalığa yuvarlanır (12,5 saat = 1,56 adam/gün).
+- Müşteri onayı izlenmez; projeye danışman ataması yok (her danışman tüm aktif projeleri görür); resmî tatil takvimi yok.
+- v0.1.0'daki eksikler sürüyor.
+
