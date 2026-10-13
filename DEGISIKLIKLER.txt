@@ -93,3 +93,16 @@ Yeni degisiklikler EN ALTA eklenir.
 [13 Ekim] Belge duzeltmesi
   - DEVIR-NOTU.md eski commit kuralini anlatiyordu, guncel kurala gore duzeltildi.
   - OKU-BENI.md "verileriniz hazir geliyor" diyordu; veri GitHub'da olmadigi icin duzeltildi.
+
+[13 Ekim] Yeni: Aktiviteler sekmesi (v0.2.0 Curie)
+  - Danismanlar gunluk calismalarini saat olarak girer; sistem adam/gune cevirir (8 saat = 1 adam/gun,
+    proje bazinda degistirilebilir).
+  - Personel rolundeki kullanicinin girdigi aktivite onaya duser; yonetici onaylar ya da neden yazarak
+    reddeder. Onaylanan kayit danisman tarafindan degistirilemez.
+  - "Projeler" kutusunda musteri projesi, birim ucret (adam/gun ya da saat), para birimi ve KDV tanimlanir.
+  - Ay secilince proje bazinda faturalanacak tutar gorunur; "Fatura taslagi olustur" Giden faturalar'a
+    fatura numarasi bos bir kayit acar. e-faturayi kestikten sonra o kayda numarayi yazarsin.
+  - Aktivite listesi Excel'e aktarilabilir. Ozet ekraninda onay bekleyen aktivite uyarisi cikar.
+  - DIKKAT: Rolleri daha once Ayarlar'da duzenleyip kaydettiysen, Personel rolunde "Aktiviteler"
+    sekmesini bir kez elle isaretlemen gerekir (Ayarlar > Roller). Yonetici icin kendiliginden acik.
+  - Bos bir test veritabaninda denendi; senin gercek verinle ve claude.ai'daki canli sayfada denenmedi.
