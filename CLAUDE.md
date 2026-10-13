@@ -21,6 +21,7 @@ Proje: Finale Yazılım Danışmanlık Ticaret Ltd. Şti. (iki şirket) için "F
 
 ## Proje yapısı
 
+- GitHub deposu (private): https://github.com/usluasan/finale-takip — dal `main`, yerel klasör `~/Projects/finale-takip`.
 - `kaynak-artifact-index.html` — KAYNAK sayfa (tek dosya HTML). Canlı hâli claude.ai'da artifact (sürüm 56). Sayfa değişiklikleri burada yapılır.
 - `web/index.html` — ÜRETİLEN dosya, elle düzenlenmez. `python3 build.py` ile kaynaktan üretilir
   (başa doctype/head + `shim.js` eklenir, xlsx yerel `vendor/` altından yüklenir). Kaynak her değiştiğinde build çalıştırılır; `python3 build.py --kontrol` uyumu denetler.

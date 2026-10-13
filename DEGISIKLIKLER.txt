@@ -60,3 +60,7 @@ Yeni degisiklikler EN ALTA eklenir.
   - Masaustu uygulamasinin kilit dosyasi (desktop/package-lock.json) depoya eklendi;
     boylece her kurulumda ayni paket surumleri yuklenir.
   - Gercek verin (finale.db) proje klasorune kopyalandi ama depoya GIRMEDI, sadece bilgisayarinda.
+
+[13 Ekim] GitHub adresi
+  - Proje GitHub'a yuklendi: https://github.com/usluasan/finale-takip (gizli/private depo).
+  - Adres DEVIR-NOTU.md ve CLAUDE.md dosyalarina yazildi.
