@@ -23,6 +23,15 @@ Yedek: `veri/` klasörünü kopyalamanız yeterli.
 
 İlk açılışta sunucu adresini, sonra anahtarı sorar. Adres sonradan Uygulama → "Sunucu adresini değiştir" ile değişir.
 
+## 3) Sayfayı yeniden üretme (build)
+Uygulamanın asıl kaynağı `kaynak-artifact-index.html` dosyasıdır. `web/index.html` bundan **üretilir**, elle düzenlenmez.
+Kaynak sayfa değiştiğinde proje klasöründe (`~/Projects/finale-takip`) şunu çalıştırın:
+
+- üret: `python3 build.py`
+- sadece kontrol et (dosyaya dokunmaz): `python3 build.py --kontrol`
+
+Betik şunları yapar: başa doctype/head ve `shim.js` ekler, xlsx kütüphanesini internet yerine yerel `vendor/` klasöründen yükler, sayfayı `<body>` içine alır. Ek paket gerekmez (Mac'te hazır gelen Python 3 yeterli).
+
 ## Bilmeniz gerekenler
 - Rol/yetki sistemi arayüz düzeyindedir. `APP_KEY` ile giren biri teknik olarak tüm veriyi okuyabilir; anahtarı yalnızca güvendiklerinize verin.
 - "Claude ile fiş/fatura oku" özelliği bu sürümde yok; yerel OCR (Tesseract) çalışır.
