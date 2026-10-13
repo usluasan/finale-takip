@@ -1,7 +1,7 @@
 # Finale Takibi — bağımsız uygulama
 
 Üç parça var: **sunucu** (veriler burada durur), **web** (tarayıcı/telefon) ve **masaüstü uygulaması** (Windows/Mac).
-Mevcut verileriniz (krediler, cariler, kullanıcılar, ayarlar, 1 CV) `veri/` klasöründe hazır geliyor.
+Verileriniz (krediler, cariler, kullanıcılar, ayarlar, CV'ler) `veri/` klasöründe durur. Bu klasör GitHub deposunda YOKTUR (gizli veri); yalnızca sizin bilgisayarınızda/sunucunuzda bulunur. Depoyu yeni indiren biri boş veriyle başlar; mevcut veriyi taşımak için `veri/` klasörünü elle kopyalayın.
 
 ## 1) Sunucuyu çalıştırma
 Gerekli: Node.js 22.5 veya üstü (https://nodejs.org). Başka paket kurmak gerekmez.
