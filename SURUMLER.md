@@ -53,7 +53,8 @@ Veri (`veri/finale.db`) git'te olmadığı için sürüm değiştirmek veriyi ge
 | `d4bd206` | C017 | `build.py` ve OKU-BENI build bölümü |
 | `f3f6582` | C018, C019 | `desktop/package-lock.json` |
 | `93ab87b` | C020 | Repo adresi belgelere işlendi |
-| etiketli commit | C021, C022 | Sürüm sistemi, `SURUMLER.md`, `SURUM`, `.claude/launch.json` |
+| `4ba2c41` | C022 | `.claude/launch.json` (önizleme için sunucu başlatma ayarı) |
+| `fb377b1` | C021 | Sürüm sistemi, `SURUMLER.md`, `SURUM` — **`v0.1.0` etiketi bu commit üzerinde** |
 
 **Test durumu**
 - Test edildi: sunucu gerçek veriyle açıldı; 17 ekranın tamamı hatasız yüklendi; veri sayıları doğru (12 kredi, 2 cari, 2 şirket, 2 kullanıcı); Word önizleme; yerel xlsx; `build.py` çıktısı bayt bayt aynı.
@@ -66,3 +67,10 @@ Veri (`veri/finale.db`) git'te olmadığı için sürüm değiştirmek veriyi ge
 - Başlatma dosyalarındaki yer tutucu anahtarlar değiştirilmezse sunucu onlarla açılır.
 - Kullanıcı parolaları tek tur SHA-256 ile özetleniyor.
 - "Claude ile fiş/fatura oku" bağımsız pakette yok; haftalık kredi maili hâlâ claude.ai verisini okuyor.
+
+**Etiketten sonraki belge düzeltmeleri** (yeni sürüm sayılmaz)
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `62ced6d` | C023 | Yalnızca kayıt dosyaları değişti; tablo düzeltmesi bir betik hatası yüzünden bu commit'e GİRMEDİ |
+| C024 commit'i (`git log --grep=C024`) | C024 | Commit tablosuna gerçek commit kodları yazıldı (C023'ün eksiğini tamamlar) |

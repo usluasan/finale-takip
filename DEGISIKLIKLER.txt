@@ -81,3 +81,7 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [13 Ekim] Surum tablosu duzeltmesi
   - SURUMLER.md icindeki commit tablosuna gercek commit kodlari yazildi. Programda degisiklik yok.
+
+[13 Ekim] Duzeltme: surum tablosu
+  - Bir onceki kayitta "tablo duzeltildi" yazmistim ama duzeltme bir hata yuzunden dosyaya
+    girmemisti. Simdi gercekten yapildi. Programda degisiklik yok, sadece belge.
