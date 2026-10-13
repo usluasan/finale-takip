@@ -64,3 +64,17 @@ Yeni degisiklikler EN ALTA eklenir.
 [13 Ekim] GitHub adresi
   - Proje GitHub'a yuklendi: https://github.com/usluasan/finale-takip (gizli/private depo).
   - Adres DEVIR-NOTU.md ve CLAUDE.md dosyalarina yazildi.
+
+[13 Ekim] Gercek veriyle tarayici testi
+  - Sunucu gercek verinle acildi, 17 ekranin hepsi hatasiz yuklendi, sayilar dogru.
+  - Kayit ekleme/silme, Excel, dosya yukleme, OCR ve roller henuz denenmedi.
+
+[13 Ekim] SURUM v0.1.0 "Heisenberg" - ilk surum
+  - Surum sistemi kuruldu. Numara: vBUYUK.ORTA.KUCUK, yaninda bir bilim insaninin soyadi.
+    Hata duzeltmede son basamak artar (ad ayni kalir), yeni ozellikte orta basamak artar
+    ve yeni bir ad gelir.
+  - SURUMLER.md eklendi: her surumde ne var, hangi commit'ler ona ait, nasil geri donulur.
+  - Bundan sonra her commit mesajinda sunlar yazacak: ne degisti, neden, ne test edildi,
+    nasil geri alinir. Mesajdaki [C0xx] numarasi DEGISIKLIK_AI.txt'deki kayda baglar.
+  - Karar: commit'leri artik Claude kendisi yapip sana bildiriyor; sadece belirsiz ya da
+    geri alinmasi zor islerde once soruyor.

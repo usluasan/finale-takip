@@ -11,13 +11,43 @@ Proje: Finale Yazılım Danışmanlık Ticaret Ltd. Şti. (iki şirket) için "F
      `ID | TARİH | SÜRÜM | TÜR | DOSYA/BÖLÜM | ETKİ | NOT`
      Tür: `FEAT`, `FIX`, `UI`, `INFRA`, `DATA`, `DOC`. ID sıralı gider (C001, C002, ...).
    - `DEGISIKLIKLER.txt` — Hasan'ın okuyup takip ettiği, tarihli, sade Türkçe liste.
-3. **Commit:** Her değişiklikten sonra Hasan'a "GitHub'a commit edeyim mi?" diye sor.
-   - Küçük değişikliklerde cevabı bekle.
-   - Büyük değişikliklerde (yeni özellik, veri yapısı değişimi, sürüm atlaması) sormadan commit'le, push et ve Hasan'a bildir.
+3. **Commit:** Commit'leri Claude yapar (Hasan'ın 13 Ekim 2026 kararı). Bir değişiklik tamamlanıp test edilince sormadan commit'le, push et ve Hasan'a ne yaptığını bildir.
+   - Yalnızca şu durumlarda önce sor: kapsam belirsizse, geri alınması zor bir işse (veri silme/dönüştürme, geçmişi değiştirme), ya da yarım/test edilmemiş bir şeyi commit'lemek gerekiyorsa.
+   - Her commit TEK bir konuyu içerir; ilgisiz değişiklikler ayrı commit olur. Kayıt dosyaları (madde 2) aynı commit'e girer.
+   - Sürüm atlamasına ve etiketlemeye Claude karar verir ("Sürüm ve commit düzeni" bölümü).
 4. **Kapsam:** İşe başlamadan önce kapsam belirsizse çoktan seçmeli kısa sorular sor; netse hemen yap.
 5. **Güvenlik:** Parola, anahtar (`APP_KEY`, `ADMIN_KEY`), kişisel/mali veri, `veri/` klasörü ve `finale.db` repoya ASLA girmez (`.gitignore`'da kalır). Güvenlik açığı görürsen söyle.
 6. **Dürüstlük:** Test etmediğin şeyi "çalışıyor" deme. Neyin test edildiğini ve neyin edilmediğini açıkça yaz.
 7. **Komutlar:** Hasan Mac kullanıyor ve komut satırında yeni. Komut verirken tam komutu ve hangi klasörde çalıştırılacağını yaz.
+
+## Sürüm ve commit düzeni
+
+Amaç: Hasan da Claude da her commit'te neyin değiştiğini, nedenini ve nasıl geri alınacağını tek bakışta anlasın.
+
+**Commit mesajı biçimi** (hepsi Türkçe):
+
+```
+TÜR(bölüm): tek satır özet [C0xx]
+
+Ne değişti:
+- ...
+Neden:
+- ...
+Test:
+- edildi: ...
+- edilmedi: ...
+Geri alma: git revert <bu commit> (ek adım varsa yaz)
+```
+
+- `TÜR`: `FEAT`, `FIX`, `UI`, `INFRA`, `DATA`, `DOC` (DEGISIKLIK_AI.txt ile aynı). `bölüm`: `sayfa`, `sunucu`, `shim`, `masaustu`, `build`, `belge`, `surum` gibi.
+- `[C0xx]`: bu commit'in DEGISIKLIK_AI.txt kayıt numarası/numaraları. Böylece `git log --grep=C021` commit'i, kayıt da commit'i bulur.
+- Hata düzeltmesinde hatayı getiren commit/kayıt da yazılır ("Düzeltir: C015").
+
+**Sürümler:** `vBÜYÜK.ORTA.KÜÇÜK Kodad`; kurallar ve geçmiş `SURUMLER.md` dosyasında, güncel sürüm `SURUM` dosyasında.
+- KÜÇÜK: hata/küçük düzeltme (kodad aynı). ORTA: yeni özellik (yeni kodad). BÜYÜK: veri yapısı/geriye uyumsuz değişiklik (yeni kodad).
+- Kodad ünlü bir bilim insanının soyadıdır (ilk sürüm: Heisenberg). Daha önce kullanılmamış bir ad seç.
+- Sürüm atlarken sırayla: `SURUM`, `SURUMLER.md` (içerik, commit tablosu, test durumu), `desktop/package.json` + `package-lock.json` sürümü, iki kayıt dosyası → commit → açıklamalı etiket (`git tag -a v0.2.0 -m "v0.2.0 Kodad"`) → `git push --follow-tags` → `gh release create`.
+- Geri alma `git revert` ile yapılır; `git reset --hard`, geçmişi yeniden yazma ve zorla push yapılmaz.
 
 ## Proje yapısı
 
@@ -28,7 +58,8 @@ Proje: Finale Yazılım Danışmanlık Ticaret Ltd. Şti. (iki şirket) için "F
 - `web/shim.js` — `claude.use` (db/assets/downloads/user) uyumluluk katmanı. `web/ocr`, `web/pdfjs`, `web/mammoth`, `web/vendor` üçüncü taraf kütüphanelerdir.
 - `server/` — Node 22.5+, `node:sqlite`, REST + SSE. `APP_KEY` ve `ADMIN_KEY` ortam değişkenleriyle çalışır.
 - `desktop/` — Electron masaüstü uygulaması.
-- Kurulum: `OKU-BENI.md`. Devir bilgisi: `DEVIR-NOTU.md`.
+- Kurulum: `OKU-BENI.md`. Devir bilgisi: `DEVIR-NOTU.md`. Sürüm geçmişi: `SURUMLER.md`, güncel sürüm: `SURUM`.
+- `.claude/launch.json` — Claude Code önizlemesi için sunucu başlatma ayarı (anahtarları `veri/yerel-anahtarlar.env` dosyasından okur; o dosya repoda yoktur).
 
 ## Bilinen eksikler
 
