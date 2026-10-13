@@ -78,3 +78,6 @@ Yeni degisiklikler EN ALTA eklenir.
     nasil geri alinir. Mesajdaki [C0xx] numarasi DEGISIKLIK_AI.txt'deki kayda baglar.
   - Karar: commit'leri artik Claude kendisi yapip sana bildiriyor; sadece belirsiz ya da
     geri alinmasi zor islerde once soruyor.
+
+[13 Ekim] Surum tablosu duzeltmesi
+  - SURUMLER.md icindeki commit tablosuna gercek commit kodlari yazildi. Programda degisiklik yok.
