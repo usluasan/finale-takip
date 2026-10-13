@@ -54,3 +54,9 @@ Yeni degisiklikler EN ALTA eklenir.
   - build.py eklendi: kaynak sayfadan web/index.html dosyasini tek komutla uretir.
     Komut (proje klasorunde): python3 build.py
   - Kontrol edildi: betigin urettigi dosya, zip'ten gelen dosyayla birebir ayni.
+
+[13 Ekim] Finale-Takibi klasoru ile esitleme
+  - Downloads/Finale-Takibi klasoru incelendi: program dosyalari zip ile birebir ayni.
+  - Masaustu uygulamasinin kilit dosyasi (desktop/package-lock.json) depoya eklendi;
+    boylece her kurulumda ayni paket surumleri yuklenir.
+  - Gercek verin (finale.db) proje klasorune kopyalandi ama depoya GIRMEDI, sadece bilgisayarinda.
