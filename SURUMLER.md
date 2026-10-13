@@ -106,3 +106,32 @@ Yeni modül: **Aktiviteler** (danışman efor girişi). claude.ai artifact'ı g�
 - Müşteri onayı izlenmez; projeye danışman ataması yok (her danışman tüm aktif projeleri görür); resmî tatil takvimi yok.
 - v0.1.0'daki eksikler sürüyor.
 
+---
+
+## v0.3.0 Feynman — 13 Ekim 2026
+
+Aktiviteler modülü, şirketin SAP'deki aktivite programları (ZFNL_AKTIVITE_YONETIMI, ZFNL_AKTIVITE_RAPOR) örnek alınarak genişletildi. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Faturalama tipi (Ayarlar'da düzenlenir: kod, ad, kural), faturalama durumu ve faturalanmama nedeni.
+- Efor statüsü: Eforlanacak, Proje kapsamında, Danışmanda bekliyor, Eforlanmayacak. Yalnızca onaylı ve "Eforlanacak" kayıtlar fatura taslağına girer.
+- İş durumu (iptalde neden zorunlu) ve iş statüsü.
+- Efor statüsü filtresi, Excel'de yeni sütunlar, projede varsayılan faturalama tipi.
+- Onay akışı değişmedi; "Danışmanda bekliyor" kayıt onaylanınca "Eforlanacak" olur.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `321c639` | C029 | Faturalama tipi, efor statüsü, iş durumu, iş statüsü |
+| C030 commit'i (`git log --grep=C030`) | C030 | Sürüm v0.3.0 Feynman — **`v0.3.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (boş test veritabanında): tip kuralları ve alan görünürlüğü, zorunlu nedenler, tip 05 onay akışı, efor filtresi, eski kayıtların gösterimi, fatura tablosu, Excel sütunları, tip adı kaydı.
+- Test edilmedi: gerçek veri, claude.ai artifact'ı, ekip lideri kapsamı, Electron, Docker.
+
+**Bilinen eksikler**
+- Faturalama tipi adları "Tip 01–07" olarak geliyor; iş durumu ve iş statüsü listeleri tahmini. Ayarlar'dan gerçek değerler yazılmalı.
+- SAP'de olup henüz olmayanlar: ayrı faturalanacak efor (saat + gün), çalışılan / faturalanacak müşteri ayrımı, PYP öğesi, faturalanacak danışman, müşteri danışmanı, ek açıklama, aktivite numarası, danışmanın danışmanı onaylaması.
+- v0.2.0'daki eksikler sürüyor.
+

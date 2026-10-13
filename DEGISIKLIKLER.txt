@@ -122,3 +122,6 @@ Yeni degisiklikler EN ALTA eklenir.
     (SAP'deki adlari kodda yoktu). Gercek adlarini yaz. Ayarlar > Listeler'deki "Is durumlari" ve
     "Is statuleri" de tahminimdir; kendi degerlerinizle degistir.
   - Bos test veritabaninda denendi; gercek verinle denenmedi.
+
+[13 Ekim] Surum v0.3.0 Feynman
+  - Faturalama tipi ve efor statusu ile birlikte surum v0.2.0 Curie'den v0.3.0 Feynman'a cikti.
