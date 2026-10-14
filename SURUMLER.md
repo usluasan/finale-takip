@@ -135,3 +135,24 @@ Aktiviteler modülü, şirketin SAP'deki aktivite programları (ZFNL_AKTIVITE_YO
 - SAP'de olup henüz olmayanlar: ayrı faturalanacak efor (saat + gün), çalışılan / faturalanacak müşteri ayrımı, PYP öğesi, faturalanacak danışman, müşteri danışmanı, ek açıklama, aktivite numarası, danışmanın danışmanı onaylaması.
 - v0.2.0'daki eksikler sürüyor.
 
+---
+
+## v0.3.1 Feynman — 14 Ekim 2026
+
+Görünüm güncellemesi: marka rengi koyu yeşilden turkuaza geçti (Claude Design tuvalinde seçildi). Yeni özellik yok. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `a0774fc` | C031 | Marka rengi turkuaz, uygulama simgesi |
+| C032 commit'i (`git log --grep=C032`) | C032 | Sürüm v0.3.1 — **`v0.3.1` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi: test sunucusunda açık ve koyu temada Aktiviteler sekmesi.
+- Test edilmedi: gerçek veri, Electron, Docker.
+
+**Bilinen eksikler**
+- Finale tasarım sistemi (claude.ai) hâlâ eski yeşil renklerde.
+- Birincil düğme degradesinin açık ucunda beyaz yazı 3,68:1 (eskisi 3,96:1).
+

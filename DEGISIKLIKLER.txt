@@ -132,3 +132,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - "Odendi / Onaylandi" yesili ve uyari turuncusu ayni kaldi; durumlar marka renginden ayrisiyor.
   - Masaustu uygulama simgesi (F) turkuaz olarak yeniden cizildi.
   - Test sunucusunda acik ve koyu temada bakildi; gercek verinle ve masaustu uygulamasinda denenmedi.
+
+[14 Ekim] Surum v0.3.1
+  - Turkuaz renk guncellemesiyle surum v0.3.0'dan v0.3.1'e cikti (kodad ayni: Feynman).
