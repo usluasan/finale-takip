@@ -125,3 +125,10 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [13 Ekim] Surum v0.3.0 Feynman
   - Faturalama tipi ve efor statusu ile birlikte surum v0.2.0 Curie'den v0.3.0 Feynman'a cikti.
+
+[14 Ekim] Yeni renk: turkuaz (v0.3.1)
+  - Uygulamanin koyu yesil marka rengi turkuaz oldu: kenar menu, ust cubuk, dugmeler, basliklar,
+    tablo basliklari, giris ekrani ve masaustu pencere rengi.
+  - "Odendi / Onaylandi" yesili ve uyari turuncusu ayni kaldi; durumlar marka renginden ayrisiyor.
+  - Masaustu uygulama simgesi (F) turkuaz olarak yeniden cizildi.
+  - Test sunucusunda acik ve koyu temada bakildi; gercek verinle ve masaustu uygulamasinda denenmedi.

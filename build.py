@@ -28,7 +28,7 @@ BAS = (
     "<head>\n"
     '<meta charset="utf-8">\n'
     '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
-    '<meta name="theme-color" content="#0a3f37">\n'
+    '<meta name="theme-color" content="#164e63">\n'
     '<script src="shim.js"></script>\n'
 )
 XLSX_CDN = '<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>'

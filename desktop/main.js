@@ -10,7 +10,7 @@ function open(){
   else win.loadFile(path.join(__dirname,'setup.html'));
 }
 function create(){
-  win=new BrowserWindow({width:1360,height:900,minWidth:420,minHeight:600,title:'Finale Takibi',backgroundColor:'#0a3f37',autoHideMenuBar:true,
+  win=new BrowserWindow({width:1360,height:900,minWidth:420,minHeight:600,title:'Finale Takibi',backgroundColor:'#164e63',autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false}});
   win.webContents.setWindowOpenHandler(({url})=>{if(/^blob:|^about:/.test(url))return {action:'allow'};shell.openExternal(url);return {action:'deny'}});
   win.webContents.session.on('will-download',()=>{});
