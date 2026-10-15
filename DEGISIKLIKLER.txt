@@ -142,3 +142,14 @@ Yeni degisiklikler EN ALTA eklenir.
   - Telefonda tam form yerine sade "Hizli giris" acilir: gun (Bugun, Dun...), son kullandigin
     projeler, saat dugmeleri (1-2-4-6-8) ve aciklama. "Tum alanlar" ile tam form acilir.
   - Test sunucusunda masaustu ve telefon boyutunda denendi; gercek verinle denenmedi.
+
+[15 Ekim] Aktiviteler: SAP'deki eksik alanlar eklendi (v0.4.0 Noether)
+  - Projeye: proje kodu, ayri fatura musterisi, PYP ogeleri ve varsayilan musteri danismani.
+  - Aktiviteye: PYP ogesi, musteri danismani, ek aciklama (1000 karakter) ve otomatik aktivite
+    numarasi (AKT-000001...).
+  - Faturalanacak efor artik sureden ayri: "faturalanacak efor (saat)" + "ek gun" girilir, toplam
+    adam/gun kendiliginden hesaplanir. Bos birakilirsa sure kadar sayilir.
+  - "Faturalanacak danisman" secilebilir; efor ve doluluk o danismana yazilir.
+  - Fatura taslagi faturalanacak efor uzerinden ve fatura musterisine kesilir. Excel'e yeni sutunlar eklendi.
+  - Eski kayitlarin aktivite numarasi yok; yalnizca yeni girilenler numara alir.
+  - Test sunucusunda denendi; gercek verinle denenmedi.
