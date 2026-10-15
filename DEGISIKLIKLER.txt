@@ -135,3 +135,10 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [14 Ekim] Surum v0.3.1
   - Turkuaz renk guncellemesiyle surum v0.3.0'dan v0.3.1'e cikti (kodad ayni: Feynman).
+
+[15 Ekim] Aktiviteler: haftalik serit ve telefondan hizli giris
+  - Sekmenin ustunde bu haftanin 5 is gunu gorunur: her gun 8 saate gore dolan bir halka,
+    "Tamam / Eksik 2 saat / Giris yok" notu. Oklarla onceki haftalara bakilabilir.
+  - Telefonda tam form yerine sade "Hizli giris" acilir: gun (Bugun, Dun...), son kullandigin
+    projeler, saat dugmeleri (1-2-4-6-8) ve aciklama. "Tum alanlar" ile tam form acilir.
+  - Test sunucusunda masaustu ve telefon boyutunda denendi; gercek verinle denenmedi.
