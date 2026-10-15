@@ -5,7 +5,7 @@
       "name": "finale-sunucu",
       "runtimeExecutable": "sh",
       "runtimeArgs": ["-c", "cd /Users/Hasan/Projects/finale-takip && . veri/yerel-anahtarlar.env && exec node server/server.js"],
-      "port": 8080
+      "port": 8090
     }
   ]
 }

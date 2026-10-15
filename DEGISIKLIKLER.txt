@@ -156,3 +156,8 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [15 Ekim] Surum v0.4.0 Noether
   - Haftalik serit, hizli giris ve SAP alanlariyla surum v0.3.1'den v0.4.0 Noether'e cikti.
+
+[15 Ekim] Sunucu adresi degisti: 8080 yerine 8090
+  - Bilgisayarindaki baska bir proje (grin-takip, Docker) 8080 portunu kullaniyor; Finale sunucusu
+    bu yuzden acilamiyordu. Finale artik http://localhost:8090 adresinde aciliyor.
+  - Masaustu uygulamasinda adresi bir kez degistirmen gerekiyor (Uygulama > Sunucu adresini degistir).
