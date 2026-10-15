@@ -156,3 +156,31 @@ Görünüm güncellemesi: marka rengi koyu yeşilden turkuaza geçti (Claude Des
 - Finale tasarım sistemi (claude.ai) hâlâ eski yeşil renklerde.
 - Birincil düğme degradesinin açık ucunda beyaz yazı 3,68:1 (eskisi 3,96:1).
 
+---
+
+## v0.4.0 Noether — 15 Ekim 2026
+
+Aktiviteler: Claude Design tuvalindeki haftalık şerit ve telefondan hızlı giriş; SAP'deki aktivite programından kalan alanlar. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Haftalık şerit (Pzt–Cum, 8 saate göre halka, önceki haftalar) ve 640px altında sade hızlı giriş.
+- Proje kodu, fatura müşterisi, PYP öğeleri, müşteri danışmanı; aktivitede PYP, faturalanacak danışman, faturalanacak efor (saat + ek gün), ek açıklama, aktivite numarası.
+- Fatura taslağı faturalanacak efordan ve fatura müşterisine kesilir.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `1e55f4e` | C033 | Haftalık şerit ve telefondan hızlı giriş |
+| `f7d7de6` | C034 | SAP alanları |
+| C035 commit'i (`git log --grep=C035`) | C035 | Sürüm v0.4.0 Noether — **`v0.4.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (test sunucusunda): şerit ve hafta geçişi, mobilde hızlı giriş ve doğrulama, SAP alanlarının tamamı, efor hesabı, fatura taslağı, Excel.
+- Test edilmedi: gerçek veri, personel rolüyle giriş, Electron, Docker.
+
+**Bilinen eksikler**
+- SAP'deki gibi faturalanacak danışman için ikinci kayıt açılmaz; tek kayıtta alan olarak tutulur.
+- Eski aktivitelerin numarası yoktur.
+- Haftalık şerit resmî tatilleri bilmez.
+
