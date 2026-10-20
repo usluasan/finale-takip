@@ -7,13 +7,15 @@ Verileriniz (krediler, cariler, kullanıcılar, ayarlar, CV'ler) `veri/` klasör
 Gerekli: Node.js 22.5 veya üstü (https://nodejs.org). Başka paket kurmak gerekmez.
 
 - Windows: `baslat.bat` dosyasındaki iki anahtarı değiştirip çift tıklayın.
-- Mac/Linux: `APP_KEY=... ADMIN_KEY=... ./baslat.sh`
+- Mac/Linux: `./baslat.sh`
 
-Anahtar kuralları (v0.4.1): iki anahtar da **en az 16 karakter**, birbirinden farklı ve yer tutucu ("BURAYA-...") olmamalı; aksi halde sunucu açılmaz. Üretmek için Terminal'de: `openssl rand -hex 24`. Yalnızca yerel denemede bu kontrol `ALLOW_WEAK_KEYS=1` ile atlanabilir.
+Yönetim anahtarı kuralı: `ADMIN_KEY` tanımlanırsa en az 16 karakter olmalı ve yer tutucu ("BURAYA-...") olmamalı; aksi halde sunucu açılmaz. Yerel denemede `ALLOW_WEAK_KEYS=1` ile atlanabilir.
 Sunucuya (apps.finale.com.tr/finale/) kurulum: `deploy/DEPLOY.md`.
 - Docker: `docker-compose.yml` içindeki anahtarları değiştirip `docker compose up -d`
 
-`APP_KEY`: herkesin ilk açılışta girdiği anahtar. `ADMIN_KEY`: sadece sizin; bununla girince "Uygulama sahibi olarak parolasız gir" düğmesi çalışır.
+**Giriş (v0.5.0):** herkes uygulamadaki **kullanıcı adı ve şifresiyle** girer; şifreyi sunucu doğrular, şifre özetleri tarayıcıya hiç gönderilmez. Şifreler en az 8 karakter. 15 dakikada 10 hatalı denemede o adres 15 dakika engellenir.
+`ADMIN_KEY` isteğe bağlıdır ve ekranda karşılığı yoktur; yalnızca acil durum betikleri içindir.
+**Şifre unutulursa (acil durum):** sunucuda `node server/kullanici.js sifre <kullanıcı adı>` (Docker'da: `sudo docker exec -it finale-takip-finale-takip-1 node server/kullanici.js sifre <ad>`). Şifre ekranda görünmeden iki kez sorulur. Kullanıcıları listelemek: `... kullanici.js liste`, boş kurulumda ilk yönetici: `... kullanici.js ekle <ad>`.
 Adres: `http://SUNUCU-IP:8080` — telefon ve bilgisayarda tarayıcıyla bu adres açılır.
 
 **Önemli:** İnternetten erişilecekse sunucunun önüne HTTPS koyun (Caddy, nginx veya Cloudflare Tunnel). Aksi halde anahtar ve veriler şifresiz gider.
@@ -36,7 +38,7 @@ Kaynak sayfa değiştiğinde proje klasöründe (`~/Projects/finale-takip`) şun
 Betik şunları yapar: başa doctype/head ve `shim.js` ekler, xlsx kütüphanesini internet yerine yerel `vendor/` klasöründen yükler, sayfayı `<body>` içine alır. Ek paket gerekmez (Mac'te hazır gelen Python 3 yeterli).
 
 ## Bilmeniz gerekenler
-- Rol/yetki sistemi arayüz düzeyindedir. `APP_KEY` ile giren biri teknik olarak tüm veriyi okuyabilir; anahtarı yalnızca güvendiklerinize verin.
+- Rol/yetki sistemi henüz arayüz düzeyindedir: giriş yapan her kullanıcı teknik olarak tüm veriyi okuyabilir. Rol kontrolünün sunucuya taşınması sıradaki iştir.
 - "Claude ile fiş/fatura oku" özelliği bu sürümde yok; yerel OCR (Tesseract) çalışır.
 - claude.ai'daki sürüm kendi verisini kullanmaya devam eder, ikisi senkron değildir. Geçişten sonra tek tarafı kullanın.
 - Haftalık kredi maili (planlı görev) hâlâ claude.ai verisini okur; geçişte yeniden yapılandırılmalı.

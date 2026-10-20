@@ -19,7 +19,7 @@ Proje: Finale Yazılım Danışmanlık Ticaret Ltd. Şti. (iki şirket) için "F
    - Her oturumun başında `git status` ve `git fetch` ile durumu kontrol et: commit'lenmemiş ya da push edilmemiş değişiklik (ör. Hasan'ın elle yaptığı düzenleme) varsa ne olduğunu söyle ve kayda al. Her turun sonunda çalışma klasörü temiz ve GitHub ile eşit olmalı; değilse nedenini yaz.
    - Commit'ten önce `git diff --cached --stat` ile içeriğin mesajla uyuştuğunu doğrula.
 4. **Kapsam:** İşe başlamadan önce kapsam belirsizse çoktan seçmeli kısa sorular sor; netse hemen yap.
-5. **Güvenlik:** Parola, anahtar (`APP_KEY`, `ADMIN_KEY`), kişisel/mali veri, `veri/` klasörü ve `finale.db` repoya ASLA girmez (`.gitignore`'da kalır). Güvenlik açığı görürsen söyle.
+5. **Güvenlik:** Parola, anahtar (`ADMIN_KEY`; eski `APP_KEY`), kullanıcı şifreleri ve özetleri, kişisel/mali veri, `veri/` klasörü ve `finale.db` repoya ASLA girmez (`.gitignore`'da kalır). Güvenlik açığı görürsen söyle.
 6. **Dürüstlük:** Test etmediğin şeyi "çalışıyor" deme. Neyin test edildiğini ve neyin edilmediğini açıkça yaz.
 7. **Komutlar:** Hasan Mac kullanıyor ve komut satırında yeni. Komut verirken tam komutu ve hangi klasörde çalıştırılacağını yaz.
 
@@ -59,7 +59,7 @@ Geri alma: git revert <bu commit> (ek adım varsa yaz)
 - `web/index.html` — ÜRETİLEN dosya, elle düzenlenmez. `python3 build.py` ile kaynaktan üretilir
   (başa doctype/head + `shim.js` eklenir, xlsx yerel `vendor/` altından yüklenir). Kaynak her değiştiğinde build çalıştırılır; `python3 build.py --kontrol` uyumu denetler.
 - `web/shim.js` — `claude.use` (db/assets/downloads/user) uyumluluk katmanı. `web/ocr`, `web/pdfjs`, `web/mammoth`, `web/vendor` üçüncü taraf kütüphanelerdir.
-- `server/` — Node 22.5+, `node:sqlite`, REST + SSE. `APP_KEY` ve `ADMIN_KEY` ortam değişkenleriyle çalışır.
+- `server/` — Node 22.5+, `node:sqlite`, REST + SSE. Giriş kullanıcı adı + şifreyle (sunucu doğrular, `server/sifre.js`, scrypt); `ADMIN_KEY` yalnız acil durum; acil şifre sıfırlama `server/kullanici.js`.
 - `desktop/` — Electron masaüstü uygulaması.
 - Kurulum: `OKU-BENI.md`. Devir bilgisi: `DEVIR-NOTU.md`. Sürüm geçmişi: `SURUMLER.md`, güncel sürüm: `SURUM`.
 - `.claude/launch.json` — Claude Code önizlemesi için sunucu başlatma ayarı (anahtarları `veri/yerel-anahtarlar.env` dosyasından okur; o dosya repoda yoktur).
@@ -68,5 +68,5 @@ Geri alma: git revert <bu commit> (ek adım varsa yaz)
 
 - Banka bakiyesi ve kart ödemeleri nakit akışına bağlı değil.
 - "Claude ile fiş/fatura oku" bağımsız pakette yok (yerel OCR var).
-- Roller yalnızca arayüz düzeyinde; sunucuda gerçek yetki kontrolü yok (`APP_KEY` bilen tüm veriyi okur/yazar).
+- Roller yalnızca arayüz düzeyinde; sunucuda rol kontrolü yok (giriş yapan her kullanıcı tüm veriyi okur/yazar).
 - Haftalık kredi maili (pazartesi; huslu, sturhan, oyucesoy @finale.com.tr) hâlâ claude.ai verisini okuyor.

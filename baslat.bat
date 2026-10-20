@@ -1,7 +1,7 @@
 @echo off
-rem Sunucuyu baslatir. Asagidaki iki anahtari kendinize gore degistirin.
-set APP_KEY=BURAYA-HERKESIN-KULLANACAGI-ANAHTAR
-set ADMIN_KEY=BURAYA-SADECE-SENIN-ANAHTARIN
+rem Sunucuyu baslatir. Giris, uygulamadaki kullanici adi + sifreyle yapilir (v0.5.0).
+rem ADMIN_KEY istege baglidir (acil durum icin, en az 16 karakter).
+set ADMIN_KEY=
 set PORT=8080
 node server\server.js
 pause

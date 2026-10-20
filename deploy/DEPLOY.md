@@ -35,7 +35,7 @@ D="sudo -n /usr/bin/docker compose --env-file compose.env -p finale-takip -f fin
 
 # 1) Sırlar sunucuda üretilir, ekrana basılmaz; sürüm compose.env'de
 umask 077
-printf "APP_KEY=%s\nADMIN_KEY=%s\nTRUST_PROXY=1\nCOOKIE_PATH=/finale/\n" "$(openssl rand -hex 24)" "$(openssl rand -hex 24)" > finale-takip.env
+printf "ADMIN_KEY=%s\nTRUST_PROXY=1\nCOOKIE_PATH=/finale/\n" "$(openssl rand -hex 24)" > finale-takip.env   # v0.5.0: APP_KEY yok
 printf "FINALE_SURUM=v0.4.1\n" > compose.env
 
 # 2) İmaj
@@ -54,11 +54,16 @@ sudo -n /usr/bin/docker exec nginx-proxy-manager nginx -t
 #    (Hasan UI'dan; önce mevcut ayar yedeklenir; ortak nottaki "Kilit" kuralına uyulur)
 ```
 
-Giriş anahtarını Mac'te panoya almak (ekrana basmadan):
+## Giriş ve acil durum (v0.5.0)
+
+Herkes uygulamadaki **kullanıcı adı + şifreyle** girer; şifreyi sunucu doğrular. Ekranda anahtar ya da parolasız giriş yoktur.
+Şifre unutulursa (kullanıcının kendisi ya da yönetici), Mac'te Terminal'de:
 
 ```bash
-ssh -i ~/.ssh/finale_sunucu -p 2222 fnroot@192.168.5.110 'grep ^ADMIN_KEY= /opt/docker/finale/finale-takip.env | cut -d= -f2' | tr -d '\n' | pbcopy
+ssh -t -i ~/.ssh/finale_sunucu -p 2222 fnroot@192.168.5.110 'sudo -n /usr/bin/docker exec -it finale-takip-finale-takip-1 node server/kullanici.js sifre <kullanıcı adı>'
 ```
+
+Şifre ekranda görünmeden iki kez sorulur; o kullanıcının açık oturumları kapanır. Kullanıcı listesi: aynı komutta `sifre <ad>` yerine `liste`.
 
 Mac'te tutarlı veri yedeği (çalışan veritabanı düz `cp` ile kopyalanmaz), `~/Projects/finale-takip` klasöründe:
 
@@ -90,6 +95,6 @@ Tarayıcıda: giriş anahtarı -> uygulama girişi -> tüm sekmeler, Excel'e akt
 
 ## Bilinen sınırlar
 
-- Roller hâlâ yalnızca arayüzde uygulanır; `APP_KEY` bilen herkes veriyi okuyup yazabilir. Anahtarı yalnızca güvenilen kişilere verin.
+- Roller hâlâ yalnızca arayüzde uygulanır; giriş yapan her kullanıcı teknik olarak tüm veriyi okuyup yazabilir (sıradaki iş: rol kontrolü sunucuda).
 - Deneme sınırı bellekte tutulur; sunucu yeniden başlarsa sıfırlanır.
 - `app.finale.com.tr` için DNS kaydı yok (20 Ekim 2026 kontrolü); ayrı bir API alan adı kullanılacaksa önce DNS A kaydı ve NPM'de sertifika gerekir.
