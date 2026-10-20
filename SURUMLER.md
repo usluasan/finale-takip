@@ -206,10 +206,11 @@ Sunucuya çıkış hazırlığı: güvenlik düzeltmeleri ve `https://apps.final
 
 **Test durumu**
 - Test edildi (yerel Docker, NPM taklidi): güvenlik kontrollerinin tamamı, imaj ve healthcheck, gerçek verinin kopyasıyla ilk açılış, `/finale/` alt yolu, giriş, SSE, tarayıcıda 18 sekme, GRIN yolu çapraz kontrolü, kapalı upstream'de nginx'in ayakta kalması.
-- Test edilmedi: gerçek sunucu, gerçek NPM ve HTTPS, dışarıdan erişim, Electron'un yeni adresle çalışması.
+- Canlı (20 Ekim 2026, sunucuda): https://apps.finale.com.tr/finale/ yayında; dışarıdan HTTPS ile sayfa, varlıklar, sağlık 200, anahtarsız API/SSE 401, /finale → 308, http → https doğrulandı; GRIN oturumu da bağımsız olarak doğruladı.
+- Test edilmedi: canlıda tarayıcıdan giriş ve kayıt işlemleri (Hasan yapacak), Electron'un yeni adresle çalışması.
 
 **Bilinen eksikler**
-- Sunucuya henüz kurulmadı: SSH anahtarı ve NPM ayarı (Hasan) bekleniyor.
+- Sunucu saati ~36 dk geri, NTP eşitlenmiyor (düzeltme komutu Hasan'da).
 - Roller hâlâ yalnızca arayüzde; deneme sınırı bellekte (yeniden başlatmada sıfırlanır).
 - `app.finale.com.tr` için DNS kaydı yok.
 

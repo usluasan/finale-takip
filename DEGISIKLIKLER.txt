@@ -184,3 +184,9 @@ Yeni degisiklikler EN ALTA eklenir.
   - Disaridan https://apps.finale.com.tr/finale/ adresiyle acilmasi icin son adim kaldi:
     GRIN de kurulunca hazir ayari NPM ekranina senin yapistirman.
   - Bundan sonra asil veri sunucuda; bilgisayarindaki eski kopyaya kayit girme.
+
+[20 Ekim] Finale Takibi YAYINDA
+  - Adres: https://apps.finale.com.tr/finale/ (guvenli baglanti, Let's Encrypt sertifikasi).
+  - GRIN de ayni sunucuda: https://apps.finale.com.tr/grin/ . Iki oturum birbirinin adresini disaridan kontrol etti.
+  - Ana adres (https://apps.finale.com.tr/) karar verilene kadar "hazirlaniyor" sayfasini gosteriyor.
+  - Kalan: senin tarayicidan giris yapip denemen; sunucu saatinin duzeltilmesi.
