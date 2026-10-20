@@ -193,3 +193,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [20 Ekim] Sunucu saati duzeldi
   - Sunucunun saati 36 dakika geriydi; artik internetten otomatik eslesiyor. Finale bundan etkilenmedi, calisiyor.
+
+[20 Ekim] Canli giris tamam
+  - https://apps.finale.com.tr/finale/ adresinden giris yaptin, sunucuda oturumun goruldu. Kurulum tamamlandi.
