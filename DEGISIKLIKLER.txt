@@ -177,3 +177,10 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [20 Ekim] Surum v0.4.1 Noether
   - Guvenlik duzeltmeleri ve sunucu hazirligiyla surum v0.4.0'dan v0.4.1'e cikti (ad ayni: Noether).
+
+[20 Ekim] Finale sunucuya kuruldu (henuz disaridan acik degil)
+  - Finale Takibi sirket sunucusunda calisiyor; gercek verin oraya tasindi (12 kredi, cariler, kullanicilar).
+  - Tasimadan once verinin yedegi alindi, sunucuda da duruyor.
+  - Disaridan https://apps.finale.com.tr/finale/ adresiyle acilmasi icin son adim kaldi:
+    GRIN de kurulunca hazir ayari NPM ekranina senin yapistirman.
+  - Bundan sonra asil veri sunucuda; bilgisayarindaki eski kopyaya kayit girme.

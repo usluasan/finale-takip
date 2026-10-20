@@ -20,33 +20,44 @@ Ayrı gateway konteyneri yoktur (Hasan'ın 20 Ekim 2026 kararı: yönlendirme me
 - Sırlar: `/opt/docker/finale/finale-takip.env` (`chmod 600`, örneği `deploy/finale-takip.env.ornek`)
 - NPM bloğu: `deploy/npm-finale.conf` (upstream değişkenle çözülür; Finale kapalıyken NPM ve diğer siteler etkilenmez)
 
-## İlk kurulum (sunucuda, root)
+## İlk kurulum (sunucuda fnroot; 20 Ekim 2026'da bu adımlarla kuruldu)
+
+`fnroot` için yalnızca `/usr/bin/docker` parolasız sudo'dur (`/etc/sudoers.d/fnroot-docker`); `sudo VAR=x docker ...` çalışmaz, Compose değişkenleri `compose.env` dosyasından okunur.
 
 ```bash
-# 1) Kod: etiketli sürümü al (örnek v0.4.1)
+# 0) Mac'ten: etiketli sürümü aktar (git dışı hiçbir şey gitmez), ~/Projects/finale-takip klasöründe
+git archive --format=tar v0.4.1 | ssh -i ~/.ssh/finale_sunucu -p 2222 fnroot@192.168.5.110 \
+  'mkdir -p /opt/docker/finale/finale-takip && tar -x -C /opt/docker/finale/finale-takip'
+
+# Sunucuda, /opt/docker/finale klasöründe:
 cd /opt/docker/finale
-git clone --branch v0.4.1 https://github.com/usluasan/finale-takip.git finale-takip   # ya da rsync ile aktar
+D="sudo -n /usr/bin/docker compose --env-file compose.env -p finale-takip -f finale-takip/deploy/compose.yaml"
 
-# 2) Sırlar: anahtarları sunucuda üret, dosyaya yaz (iki farklı değer: openssl rand -hex 24)
-cp finale-takip/deploy/finale-takip.env.ornek finale-takip.env && chmod 600 finale-takip.env
+# 1) Sırlar sunucuda üretilir, ekrana basılmaz; sürüm compose.env'de
+umask 077
+printf "APP_KEY=%s\nADMIN_KEY=%s\nTRUST_PROXY=1\nCOOKIE_PATH=/finale/\n" "$(openssl rand -hex 24)" "$(openssl rand -hex 24)" > finale-takip.env
+printf "FINALE_SURUM=v0.4.1\n" > compose.env
 
-# 3) İmaj
-export FINALE_SURUM=v0.4.1
-docker compose -p finale-takip -f finale-takip/deploy/compose.yaml build
+# 2) İmaj
+$D config --quiet && $D build
 
-# 4) Veri taşıma (İLK AÇILIŞTAN ÖNCE; yedek dosyası /root/finale-backups/<zaman>/goc/finale.db)
-docker compose -p finale-takip -f finale-takip/deploy/compose.yaml run --rm --no-deps -u root \
-  -v /root/finale-backups/<zaman>/goc:/goc:ro --entrypoint cp finale-takip /goc/finale.db /data/finale.db
-docker compose -p finale-takip -f finale-takip/deploy/compose.yaml run --rm --no-deps -u root \
-  --entrypoint chown finale-takip -R node:node /data
+# 3) Veri taşıma (İLK AÇILIŞTAN ÖNCE; yedek /opt/docker/finale/yedek/<zaman>/goc/finale.db, klasör 700, dosya 600)
+$D run --rm --no-deps -u root -v /opt/docker/finale/yedek/<zaman>/goc:/goc:ro --entrypoint cp finale-takip /goc/finale.db /data/finale.db
+$D run --rm --no-deps -u root --entrypoint chown finale-takip -R node:node /data
 
-# 5) Başlat ve ağ içinde doğrula
-docker compose -p finale-takip -f finale-takip/deploy/compose.yaml up -d --wait
-docker exec nginx-proxy-manager curl -s http://finale-takip:8080/saglik    # {"ok":1} (NPM imajında curl yoksa wget -qO- deneyin)
+# 4) Başlat ve NPM ağı içinden doğrula
+$D up -d --wait
+sudo -n /usr/bin/docker exec nginx-proxy-manager curl -s http://finale-takip:8080/saglik    # {"ok":1}
+sudo -n /usr/bin/docker exec nginx-proxy-manager nginx -t
 
-# 6) NPM: apps.finale.com.tr kaydının Advanced ayarına deploy/npm-finale.conf eklenir
+# 5) NPM: apps.finale.com.tr kaydının Advanced ayarına deploy/npm-finale.conf eklenir
 #    (Hasan UI'dan; önce mevcut ayar yedeklenir; ortak nottaki "Kilit" kuralına uyulur)
-docker exec nginx-proxy-manager nginx -t
+```
+
+Giriş anahtarını Mac'te panoya almak (ekrana basmadan):
+
+```bash
+ssh -i ~/.ssh/finale_sunucu -p 2222 fnroot@192.168.5.110 'grep ^ADMIN_KEY= /opt/docker/finale/finale-takip.env | cut -d= -f2' | tr -d '\n' | pbcopy
 ```
 
 Mac'te tutarlı veri yedeği (çalışan veritabanı düz `cp` ile kopyalanmaz), `~/Projects/finale-takip` klasöründe:
@@ -71,9 +82,9 @@ Tarayıcıda: giriş anahtarı -> uygulama girişi -> tüm sekmeler, Excel'e akt
 
 ## Güncelleme ve geri dönüş
 
-- Güncelleme: `git -C finale-takip fetch --tags && git -C finale-takip checkout vX.Y.Z`, `FINALE_SURUM=vX.Y.Z` ile build + `up -d --wait`. NPM ayarına dokunmak gerekmez (ad değişkenle çözülür).
+- Güncelleme: Mac'ten `git archive vX.Y.Z` ile yeni klasöre aktar (ör. `finale-takip-vX.Y.Z`), `compose.env` içinde `FINALE_SURUM=vX.Y.Z`, build + `up -d --wait`. NPM ayarına dokunmak gerekmez (ad değişkenle çözülür).
 - Geri dönüş: önceki etiketin imajı sunucuda durur (`finale-takip:vESKI`); `FINALE_SURUM=vESKI ... up -d --wait`.
-- Her güncellemeden önce veri yedeği: servisi durdur (`... stop finale-takip`), `/var/lib/docker/volumes/finale-takip_finale_data/_data/` klasörünü `/root/finale-backups/<zaman>/` altına kopyala (izin `700`), sonra yeniden başlat. Servis durmuşken WAL dosyaları da kopyalandığı için yedek tutarlıdır.
+- Her güncellemeden önce veri yedeği: servisi durdur (`... stop finale-takip`), volume içeriğini `$D run --rm --no-deps -u root -v /opt/docker/finale/yedek/<zaman>:/y --entrypoint cp finale-takip -a /data/. /y/` ile `/opt/docker/finale/yedek/<zaman>/` altına kopyala (izin `700`), sonra yeniden başlat. Servis durmuşken WAL dosyaları da kopyalandığı için yedek tutarlıdır.
 - Volume (`finale-takip_finale_data`) hiçbir zaman `down -v` ile silinmez.
 - NPM bloğu kaldırılırsa `/finale/` kök 503'e düşer; diğer yollar etkilenmez.
 
