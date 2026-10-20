@@ -1,0 +1,26 @@
+# Finale Takibi — sunucu Compose dosyası (ayrı proje; GRIN ile yalnızca NPM ve docker-network paylaşılır).
+# Sunucuda, /opt/docker/finale klasöründe root olarak:
+#   export FINALE_SURUM=v0.4.1
+#   docker compose -p finale-takip -f finale-takip/deploy/compose.yaml up -d --build --wait
+services:
+  finale-takip:
+    build:
+      context: ..                    # repo kökü (bu dosya deploy/ altında)
+    image: finale-takip:${FINALE_SURUM:?FINALE_SURUM tanımlı değil, örn. v0.4.1}
+    restart: unless-stopped
+    env_file:
+      - ${FINALE_ENV_DOSYASI:-/opt/docker/finale/finale-takip.env}   # APP_KEY, ADMIN_KEY...; chmod 600, repoda YOK
+    volumes:
+      - finale_data:/data            # SQLite veritabanı ve yüklenen dosyalar
+    networks:
+      default: {}
+      npm:
+        aliases: [finale-takip]      # NPM bu adla ulaşır; host portu yayınlanmaz
+
+volumes:
+  finale_data: {}
+
+networks:
+  npm:
+    external: true
+    name: ${NPM_AGI:-docker-network}

@@ -10,11 +10,13 @@ Yapılan dönüşümler:
   2. xlsx kütüphanesi CDN yerine yerel vendor/ klasöründen yüklenir.
   3. </style> etiketinden sonra </head><body> eklenir.
   4. Sona </body></html> eklenir.
+  5. "/_blob/" dosya bağlantıları göreli yapılır (alt yolda yayın için).
 
 Kullanım (repo kök klasöründe):
   python3 build.py            web/index.html dosyasını yeniden üretir
   python3 build.py --kontrol  dosyaya dokunmaz; güncel mi diye bakar
 """
+import re
 import sys
 from pathlib import Path
 
@@ -51,6 +53,11 @@ def uret(kaynak: str) -> str:
         raise SystemExit("HATA: kaynak sayfa zaten doctype içeriyor; yanlış dosya olabilir.")
     govde = kaynak.replace(XLSX_CDN, XLSX_YEREL)
     govde = govde.replace(STIL_SONU, STIL_SONU + "</head>\n<body>\n")
+    # Dosya bağlantıları göreli olsun ("/_blob/" -> "_blob/"): uygulama alt yolda (örn. /finale/) da çalışır.
+    # claude.ai artifact'ı kökten sunulduğu için kaynak sayfada mutlak yol kalır; dönüşüm yalnızca web/index.html'e uygulanır.
+    govde = re.sub(r"(['\"])/_blob/", r"\1_blob/", govde)
+    if "/_blob/" in govde:
+        raise SystemExit("HATA: web/index.html içinde dönüştürülemeyen /_blob/ yolu kaldı; build.py güncellenmeli.")
     return BAS + govde + SON
 
 

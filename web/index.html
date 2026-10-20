@@ -1849,12 +1849,12 @@ function docBtn(x){return (x.img&&/^[A-Za-z0-9_-]{8,64}$/.test(x.img))?'<button 
 document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.dataset.act;
   if(a==='vclose'||t.id==='viewer'){$('viewer').hidden=true;$('vw_b').innerHTML='';return}
   if(a==='view'){var id=t.dataset.img;if(!/^[A-Za-z0-9_-]{8,64}$/.test(id))return;$('viewer').hidden=false;
-    if(t.dataset.kind==='xml'){$('vw_b').innerHTML='<pre id="vw_pre" style="white-space:pre-wrap;overflow-wrap:anywhere;font:12px var(--f-num);margin:0">Yükleniyor…</pre>';fetch('/_blob/'+id).then(function(r){return r.text()}).then(function(x){$('vw_pre').textContent=x}).catch(function(){$('vw_pre').textContent='Belge açılamadı.'})}
+    if(t.dataset.kind==='xml'){$('vw_b').innerHTML='<pre id="vw_pre" style="white-space:pre-wrap;overflow-wrap:anywhere;font:12px var(--f-num);margin:0">Yükleniyor…</pre>';fetch('_blob/'+id).then(function(r){return r.text()}).then(function(x){$('vw_pre').textContent=x}).catch(function(){$('vw_pre').textContent='Belge açılamadı.'})}
     else if(t.dataset.kind==='pdf'){var nm=t.dataset.name||'cv.pdf';$('vw_b').innerHTML='<p class="msg" id="vw_st">Yükleniyor…</p>';
-      fetch('/_blob/'+id).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){cvCur={blob:new Blob([b],{type:'application/pdf'}),name:nm};var u=URL.createObjectURL(new Blob([b],{type:'application/pdf'}));
+      fetch('_blob/'+id).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){cvCur={blob:new Blob([b],{type:'application/pdf'}),name:nm};var u=URL.createObjectURL(new Blob([b],{type:'application/pdf'}));
         $('vw_b').innerHTML='<div class="row" style="margin-bottom:8px"><a class="btn small" href="'+u+'" target="_blank" rel="noopener">Yeni sekmede aç</a><button class="btn ghost small" data-act="cvsave">Kaydet / indir</button></div><div id="pdfbox" style="border:1px solid var(--line);border-radius:6px;padding:6px;max-height:75vh;overflow:auto"><span class="msg">Sayfalar hazırlanıyor…</span></div><p class="msg" id="pdfhint">Önizleme açılmazsa "Kaydet / indir" düğmesini kullanın.</p>';
         renderPdf(cvCur.blob,$('pdfbox')).catch(function(){var pb=$('pdfbox');if(pb)pb.innerHTML='<span class="msg">Önizleme bu görünümde açılamadı; dosyayı "Kaydet / indir" ile alabilirsiniz.</span>'})})
-      .catch(function(){$('vw_b').innerHTML='<p class="msg">Dosya açılamadı. <a href="/_blob/'+id+'" target="_blank" rel="noopener">Doğrudan bağlantıyı deneyin</a>.</p>'})}
+      .catch(function(){$('vw_b').innerHTML='<p class="msg">Dosya açılamadı. <a href="_blob/'+id+'" target="_blank" rel="noopener">Doğrudan bağlantıyı deneyin</a>.</p>'})}
     else if(t.dataset.kind==='doc'){var dn=t.dataset.name||'cv.docx';$('vw_b').innerHTML='<p class="msg" id="vw_st">Dosya hazırlanıyor…</p>';
       (async function(){try{var pr=parties.concat(contractsAll).filter(function(q){return (q.cv||q.file)===id})[0],n=(pr&&(pr.cvN||pr.fileN))||1,parts=[];
         for(var i=0;i<n;i++){var sn=await db.doc('cvblobs/'+id+'_'+i).get(),dd=sn&&(sn.data?sn.data():sn);if(!dd||!dd.d)throw 0;parts.push(dd.d)}
@@ -1864,8 +1864,8 @@ document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.data
         try{var mm=await loadMammoth(),rs=await mm.convertToHtml({arrayBuffer:await cvCur.blob.arrayBuffer()});$('docbox').innerHTML=rs.value||'<span style="color:#555">Belgede gösterilecek metin yok.</span>'}
         catch(e2){var db2=$('docbox');if(db2)db2.innerHTML='<span style="color:#555">Önizleme açılamadı; dosyayı "Kaydet / indir" ile alabilirsiniz.</span>'}}
       catch(e){$('vw_b').innerHTML='<p class="msg">Dosya okunamadı ('+esc((e&&(e.code||e.message))||'veri eksik')+').</p>'}})()}
-    else if(t.dataset.kind==='file'){$('vw_b').innerHTML='<p><a class="btn" href="/_blob/'+id+'" download="'+esc(t.dataset.name||'cv')+'">İndir: '+esc(t.dataset.name||'cv')+'</a></p>'}
-    else{$('vw_b').innerHTML='<img src="/_blob/'+id+'" alt="Belge görseli" style="max-width:100%;display:block;margin:0 auto">'}
+    else if(t.dataset.kind==='file'){$('vw_b').innerHTML='<p><a class="btn" href="_blob/'+id+'" download="'+esc(t.dataset.name||'cv')+'">İndir: '+esc(t.dataset.name||'cv')+'</a></p>'}
+    else{$('vw_b').innerHTML='<img src="_blob/'+id+'" alt="Belge görseli" style="max-width:100%;display:block;margin:0 auto">'}
     return}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('viewer').hidden){$('viewer').hidden=true;$('vw_b').innerHTML=''}});
 /* ==== KÂR / ZARAR, KDV, GÖSTERGELER ==== */

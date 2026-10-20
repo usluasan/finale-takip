@@ -1,0 +1,5 @@
+# İmaja yalnızca server/ ve web/ girer; veri, sırlar ve geliştirme dosyaları girmez
+*
+!server/
+!web/
+server/**/*.log
