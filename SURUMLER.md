@@ -210,7 +210,7 @@ Sunucuya çıkış hazırlığı: güvenlik düzeltmeleri ve `https://apps.final
 - Test edilmedi: canlıda tarayıcıdan giriş ve kayıt işlemleri (Hasan yapacak), Electron'un yeni adresle çalışması.
 
 **Bilinen eksikler**
-- Sunucu saati ~36 dk geri, NTP eşitlenmiyor (düzeltme komutu Hasan'da).
+- ~~Sunucu saati ~36 dk geri~~ — 20 Ekim 2026'da düzeltildi (NTP: time.cloudflare.com, tr.pool.ntp.org; Hasan'ın sudo'suyla, GRIN oturumu tespit etti).
 - Roller hâlâ yalnızca arayüzde; deneme sınırı bellekte (yeniden başlatmada sıfırlanır).
 - `app.finale.com.tr` için DNS kaydı yok.
 

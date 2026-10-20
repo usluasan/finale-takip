@@ -190,3 +190,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - GRIN de ayni sunucuda: https://apps.finale.com.tr/grin/ . Iki oturum birbirinin adresini disaridan kontrol etti.
   - Ana adres (https://apps.finale.com.tr/) karar verilene kadar "hazirlaniyor" sayfasini gosteriyor.
   - Kalan: senin tarayicidan giris yapip denemen; sunucu saatinin duzeltilmesi.
+
+[20 Ekim] Sunucu saati duzeldi
+  - Sunucunun saati 36 dakika geriydi; artik internetten otomatik eslesiyor. Finale bundan etkilenmedi, calisiyor.
