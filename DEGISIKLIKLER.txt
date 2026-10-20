@@ -161,3 +161,16 @@ Yeni degisiklikler EN ALTA eklenir.
   - Bilgisayarindaki baska bir proje (grin-takip, Docker) 8080 portunu kullaniyor; Finale sunucusu
     bu yuzden acilamiyordu. Finale artik http://localhost:8090 adresinde aciliyor.
   - Masaustu uygulamasinda adresi bir kez degistirmen gerekiyor (Uygulama > Sunucu adresini degistir).
+
+[20 Ekim] Guvenlik duzeltmeleri (sunucuya cikmadan once)
+  - Tarayicida artik anahtarin kendisi degil, rastgele bir oturum kodu saklaniyor; cikis yapinca gecersiz oluyor.
+  - Ust uste 10 yanlis anahtar denemesinde o adres 15 dakika engelleniyor.
+  - Kisa ya da "BURAYA-..." gibi ornek anahtarla sunucu acilmiyor; anahtarlar en az 16 karakter olmali.
+  - Yuklenen HTML gibi riskli dosyalar acilmiyor, indiriliyor (ayni adresteki GRIN'i de korur).
+  - Not: guncellemeden sonra herkes bir kez yeniden anahtar girecek.
+
+[20 Ekim] Sunucuya kurulum hazirligi
+  - Uygulama https://apps.finale.com.tr/finale/ adresinde calisacak sekilde ayarlandi.
+  - Sunucu kurulum dosyalari ve adim adim rehber hazir (deploy/DEPLOY.md).
+  - GRIN oturumuyla ortak plan: yonlendirme sunucudaki mevcut Nginx'te, ayri bir ara katman yok.
+  - Bilgisayarinda sunucunun birebir taklidinde, gercek verinin kopyasiyla denendi; gercek sunucuya henuz kurulmadi.

@@ -8,6 +8,9 @@ Gerekli: Node.js 22.5 veya üstü (https://nodejs.org). Başka paket kurmak gere
 
 - Windows: `baslat.bat` dosyasındaki iki anahtarı değiştirip çift tıklayın.
 - Mac/Linux: `APP_KEY=... ADMIN_KEY=... ./baslat.sh`
+
+Anahtar kuralları (v0.4.1): iki anahtar da **en az 16 karakter**, birbirinden farklı ve yer tutucu ("BURAYA-...") olmamalı; aksi halde sunucu açılmaz. Üretmek için Terminal'de: `openssl rand -hex 24`. Yalnızca yerel denemede bu kontrol `ALLOW_WEAK_KEYS=1` ile atlanabilir.
+Sunucuya (apps.finale.com.tr/finale/) kurulum: `deploy/DEPLOY.md`.
 - Docker: `docker-compose.yml` içindeki anahtarları değiştirip `docker compose up -d`
 
 `APP_KEY`: herkesin ilk açılışta girdiği anahtar. `ADMIN_KEY`: sadece sizin; bununla girince "Uygulama sahibi olarak parolasız gir" düğmesi çalışır.
