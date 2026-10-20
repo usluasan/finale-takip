@@ -203,3 +203,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - Yeni sifreler en az 8 karakter. Sifre degisince diger cihazlardaki oturumlar kapanir.
   - Sifre unutulursa: sunucuda tek komutla yeni sifre verilir (deploy/DEPLOY.md, "Giris ve acil durum").
   - Not: guncellemeden sonra herkes bir kez kullanici adi ve sifresiyle yeniden girecek.
+
+[20 Ekim] Surum v0.5.0 Turing
+  - Kullanici adi ve sifreyle giris ozelligiyle surum v0.4.1'den v0.5.0 Turing'e cikti.

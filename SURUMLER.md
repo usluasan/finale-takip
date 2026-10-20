@@ -215,3 +215,33 @@ Sunucuya çıkış hazırlığı: güvenlik düzeltmeleri ve `https://apps.final
 - Roller hâlâ yalnızca arayüzde; deneme sınırı bellekte (yeniden başlatmada sıfırlanır).
 - `app.finale.com.tr` için DNS kaydı yok.
 
+---
+
+## v0.5.0 Turing — 20 Ekim 2026
+
+Giriş artık **kullanıcı adı + şifreyle**; doğrulamayı sunucu yapıyor. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**; oradaki davranış değişmez).
+
+**İçerik**
+- "Sunucu giriş anahtarı" ekranı ve "Uygulama sahibi olarak parolasız gir" kaldırıldı; herkes kendi hesabıyla girer.
+- Şifre özetleri hiçbir yanıtta tarayıcıya gönderilmez; yeni özetler scrypt, eskiler ilk girişte otomatik yükseltilir.
+- Şifre en az 8 karakter; şifre değişince diğer cihazlardaki oturumlar kapanır; pasifleşen kullanıcının oturumu hemen kapanır.
+- Acil durum: sunucuda `server/kullanici.js` ile şifre sıfırlama (bkz. `deploy/DEPLOY.md`).
+- `APP_KEY` kaldırıldı; `ADMIN_KEY` yalnızca acil durum betikleri için.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `121e287` | C044 | Kullanıcı adı + şifreyle giriş, doğrulama sunucuda |
+| `948c1cc` | C045 | Belgeler ve başlatma dosyaları |
+| C046 commit'i (`git log --grep=C046`) | C046 | Sürüm v0.5.0 Turing — **`v0.5.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (gerçek veri kopyası + test kullanıcıları, yerel): giriş/hatalı giriş/deneme sınırı, eski özetin yükseltilmesi, özet sızıntısı olmaması, şifre değiştirme, oturum kapanmaları, tarayıcıda form → uygulama → çıkış, acil durum aracı.
+- Test edilmedi: yöneticinin verdiği geçici şifreyle ilk girişte zorunlu şifre değiştirme (mustChange), claude.ai artifact.
+
+**Bilinen eksikler**
+- Roller hâlâ yalnızca arayüzde: giriş yapan her kullanıcı teknik olarak tüm veriyi okuyabilir (sıradaki sürüm).
+- Mevcut kısa şifreler (8'den az) bir sonraki değişikliğe kadar çalışır.
+- Güncellemeden sonra herkes bir kez yeniden giriş yapar.
+
