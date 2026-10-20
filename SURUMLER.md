@@ -184,3 +184,32 @@ Aktiviteler: Claude Design tuvalindeki haftalık şerit ve telefondan hızlı gi
 - Eski aktivitelerin numarası yoktur.
 - Haftalık şerit resmî tatilleri bilmez.
 
+---
+
+## v0.4.1 Noether — 20 Ekim 2026
+
+Sunucuya çıkış hazırlığı: güvenlik düzeltmeleri ve `https://apps.finale.com.tr/finale/` alt yolunda yayın. Yeni özellik yok. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Oturum çerezi artık anahtarın kendisi değil, rastgele kod (`sessions` tablosu eklendi; eski veriye dokunmaz). Eski çerezler geçersiz: herkes bir kez yeniden anahtar girer.
+- Hatalı anahtar sınırı (IP başına 15 dakikada 10), zayıf/yer tutucu anahtarla açılmama, riskli yüklenen dosyaların indirme olarak sunulması.
+- Göreli yollar (uygulama kökte ve alt yolda çalışır), üretim Dockerfile'ı, `deploy/` (Compose, NPM bloğu, kurulum rehberi).
+- GRIN oturumuyla ortak sunucu planı: ayrı gateway yok, NPM'deki tek kayda iki yol bloğu (`~/Projects/ortak-sunucu/CALISMA-NOTU.md`).
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `cb0cf44` | C037 | Güvenlik: oturum çerezi, deneme sınırı, anahtar denetimi |
+| `15200e5` | C038 | Alt yolda yayın ve sunucu kurulum dosyaları |
+| C039 commit'i (`git log --grep=C039`) | C039 | Sürüm v0.4.1 — **`v0.4.1` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (yerel Docker, NPM taklidi): güvenlik kontrollerinin tamamı, imaj ve healthcheck, gerçek verinin kopyasıyla ilk açılış, `/finale/` alt yolu, giriş, SSE, tarayıcıda 18 sekme, GRIN yolu çapraz kontrolü, kapalı upstream'de nginx'in ayakta kalması.
+- Test edilmedi: gerçek sunucu, gerçek NPM ve HTTPS, dışarıdan erişim, Electron'un yeni adresle çalışması.
+
+**Bilinen eksikler**
+- Sunucuya henüz kurulmadı: SSH anahtarı ve NPM ayarı (Hasan) bekleniyor.
+- Roller hâlâ yalnızca arayüzde; deneme sınırı bellekte (yeniden başlatmada sıfırlanır).
+- `app.finale.com.tr` için DNS kaydı yok.
+

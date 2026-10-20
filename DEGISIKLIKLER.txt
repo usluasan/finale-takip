@@ -174,3 +174,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - Sunucu kurulum dosyalari ve adim adim rehber hazir (deploy/DEPLOY.md).
   - GRIN oturumuyla ortak plan: yonlendirme sunucudaki mevcut Nginx'te, ayri bir ara katman yok.
   - Bilgisayarinda sunucunun birebir taklidinde, gercek verinin kopyasiyla denendi; gercek sunucuya henuz kurulmadi.
+
+[20 Ekim] Surum v0.4.1 Noether
+  - Guvenlik duzeltmeleri ve sunucu hazirligiyla surum v0.4.0'dan v0.4.1'e cikti (ad ayni: Noether).
