@@ -206,3 +206,7 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [20 Ekim] Surum v0.5.0 Turing
   - Kullanici adi ve sifreyle giris ozelligiyle surum v0.4.1'den v0.5.0 Turing'e cikti.
+
+[20 Ekim] v0.5.0 canlida
+  - https://apps.finale.com.tr/finale/ artik kullanici adi ve sifre soruyor. Oncesinde verinin yedegi alindi.
+  - Kalan: huslu kullanicisi ve sifrenle girip denemen.
