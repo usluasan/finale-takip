@@ -20,13 +20,30 @@
   var owner=false;
   var user={isOwner:function(){return Promise.resolve(owner)}};
   var ready=null;
+  // Giriş: uygulamadaki kullanıcı adı + şifre; doğrulamayı sunucu yapar (v0.5.0).
+  // Başarılı girişte kullanıcı kimliği sayfanın oturum alanına yazılır; sayfa kendi giriş ekranını göstermez.
+  function oturumAc(r){owner=!!r.owner;try{if(r.user&&r.user.id)sessionStorage.setItem('finale_user',r.user.id);else sessionStorage.removeItem('finale_user')}catch(e){}}
+  var MSJ={401:'Kullanıcı adı veya şifre hatalı.',429:'Çok fazla hatalı deneme. 15 dakika sonra tekrar deneyin.'};
   function login(){return new Promise(function(ok){
     function ask(msg){
       var w=document.createElement('div');w.id='fk_gate';w.style.cssText='position:fixed;inset:0;z-index:99999;background:#164e63;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;padding:16px';
-      w.innerHTML='<form style="background:#fff;border-radius:14px;padding:26px;width:min(92vw,380px);display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;color:#0e7490">Finale Takibi</h2><div style="color:#b5481a;min-height:18px;font-size:13px">'+(msg||'')+'</div><input type="password" autocomplete="current-password" placeholder="Sunucu giriş anahtarı" style="padding:11px;border:1px solid #ccd;border-radius:8px;font-size:16px"><button style="padding:11px;border:0;border-radius:8px;background:#0e7490;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Bağlan</button></form>';
-      document.body.appendChild(w);var inp=w.querySelector('input');inp.focus();
-      w.querySelector('form').onsubmit=function(e){e.preventDefault();api('POST','api/login',{key:inp.value}).then(function(r){owner=!!r.owner;w.remove();ok()}).catch(function(){w.remove();ask('Anahtar hatalı')})}}
-    api('GET','api/whoami').then(function(r){owner=!!r.owner;ok()}).catch(function(){if(document.body)ask();else document.addEventListener('DOMContentLoaded',function(){ask()})})})}
+      var IN='padding:11px;border:1px solid #ccd;border-radius:8px;font-size:16px;background:#fff;color:#15231f;color-scheme:light';
+      w.innerHTML='<form style="background:#fff;border-radius:14px;padding:26px;width:min(92vw,380px);display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;color:#0e7490">Finale Takibi</h2><div id="fk_msg" style="color:#b5481a;min-height:18px;font-size:13px"></div>'
+        +'<input name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Kullanıcı adı" required style="'+IN+'">'
+        +'<input name="password" type="password" autocomplete="current-password" placeholder="Şifre" required style="'+IN+'">'
+        +'<button style="padding:11px;border:0;border-radius:8px;background:#0e7490;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Giriş yap</button>'
+        +'<div style="color:#5d6d68;font-size:12px">Şifrenizi unuttuysanız yöneticinize başvurun.</div></form>';
+      document.body.appendChild(w);w.querySelector('#fk_msg').textContent=msg||'';
+      var ad=w.querySelector('[name=username]'),pw=w.querySelector('[name=password]'),bt=w.querySelector('button');ad.focus();
+      w.querySelector('form').onsubmit=function(e){e.preventDefault();bt.disabled=true;
+        fetch('api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:ad.value.trim(),password:pw.value}),credentials:'same-origin'})
+          .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var x=new Error('giris');x.status=r.status;throw x}return j})})
+          .then(function(j){oturumAc(j);w.remove();ok()})
+          .catch(function(x){bt.disabled=false;pw.value='';w.querySelector('#fk_msg').textContent=MSJ[x.status]||'Sunucuya ulaşılamadı. Bağlantınızı kontrol edin.';pw.focus()})}}
+    api('GET','api/whoami').then(function(r){oturumAc(r);ok()}).catch(function(){if(document.body)ask();else document.addEventListener('DOMContentLoaded',function(){ask()})})})}
+  // Sayfanın çıkış ve şifre değiştirme düğmeleri bağımsız uygulamada sunucuya gider (kaynak sayfada window.__finaleStandalone ile seçilir)
+  window.__finaleCikis=function(){return fetch('api/logout',{method:'POST',credentials:'same-origin'}).catch(function(){}).then(function(){try{sessionStorage.removeItem('finale_user')}catch(e){}location.reload()})};
+  window.__finaleSifre=function(eski,yeni){return fetch('api/password',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({old:eski,new:yeni}),credentials:'same-origin'}).then(function(r){return r.json().catch(function(){return {}}).then(function(j){return {ok:r.ok,status:r.status,error:j.error,min:j.min}})})};
   window.claude={use:function(n){if(!ready)ready=login();return ready.then(function(){if(n==='db')return db;if(n==='assets')return assets;if(n==='downloads')return downloads;if(n==='user')return user;throw new Error('desteklenmiyor: '+n)})}};
   window.__finaleStandalone=true;
 })();

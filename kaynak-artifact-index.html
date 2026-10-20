@@ -336,7 +336,7 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
         <label>Rol<select id="au_role"></select></label>
         <label>E-posta (parola sıfırlama için)<input id="au_mail" type="email" autocomplete="off"></label>
         <label>Ekip lideri (varsa)<select id="au_lead"></select></label>
-        <label>Parola (en az 4 karakter)<input id="au_pin" type="password" autocomplete="new-password"></label>
+        <label>Parola (en az 8 karakter)<input id="au_pin" type="password" autocomplete="new-password"></label>
       </div>
       <div class="row"><button class="btn" data-act="auadd">Kullanıcı ekle</button><span class="msg" id="au_msg">Kullanıcının ne görüp ne yapabileceğini rolü belirler; rolleri aşağıdan düzenleyin.</span></div>
       <h2 style="font-size:15px">Roller</h2>
@@ -505,7 +505,7 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
     </div>
   </section>
 </div>
-<div id="pwbox" hidden><div class="vw-in" style="max-width:380px;display:flex;flex-direction:column;gap:12px;margin-top:10vh;border:1px solid var(--line)"><h2>Parolayı değiştir</h2><span class="msg" id="pw_note"></span><label class="msg" for="pw_old">Mevcut (veya geçici) parola</label><input id="pw_old" type="password" autocomplete="current-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><label class="msg" for="pw_new">Yeni parola (en az 4 karakter)</label><input id="pw_new" type="password" autocomplete="new-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><label class="msg" for="pw_new2">Yeni parola (tekrar)</label><input id="pw_new2" type="password" autocomplete="new-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><button class="btn" data-act="pwsave">Parolayı kaydet</button><button class="btn ghost small" data-act="pwcancel" id="pw_cancel">Vazgeç</button><span class="msg" id="pw_msg"></span></div></div>
+<div id="pwbox" hidden><div class="vw-in" style="max-width:380px;display:flex;flex-direction:column;gap:12px;margin-top:10vh;border:1px solid var(--line)"><h2>Parolayı değiştir</h2><span class="msg" id="pw_note"></span><label class="msg" for="pw_old">Mevcut (veya geçici) parola</label><input id="pw_old" type="password" autocomplete="current-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><label class="msg" for="pw_new">Yeni parola (en az 8 karakter)</label><input id="pw_new" type="password" autocomplete="new-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><label class="msg" for="pw_new2">Yeni parola (tekrar)</label><input id="pw_new2" type="password" autocomplete="new-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><button class="btn" data-act="pwsave">Parolayı kaydet</button><button class="btn ghost small" data-act="pwcancel" id="pw_cancel">Vazgeç</button><span class="msg" id="pw_msg"></span></div></div>
 <div id="login" hidden><div class="vw-in" style="max-width:380px;display:flex;flex-direction:column;gap:12px;margin-top:10vh;border:1px solid var(--line)"><h2>Finale Takibi · Giriş</h2><label class="msg" for="lg_user">Kullanıcı</label><select id="lg_user" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"></select><label class="msg" for="lg_pin">Parola</label><input id="lg_pin" type="password" autocomplete="current-password" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px"><button class="btn" data-act="login">Giriş yap</button><button class="btn ghost small" data-act="lgfg">Parolamı unuttum</button><div id="lg_fg" hidden><div style="display:flex;flex-direction:column;gap:8px"><span class="msg" id="lg_mail">Yukarıda seçili kullanıcı için, kullanıcıya bağlı e-posta adresine yönelik sıfırlama talebi oluşturulur.</span><button class="btn small" data-act="lgreq">Sıfırlama talebi gönder</button></div></div><button class="btn ghost small" data-act="lgown" id="lg_own" hidden>Uygulama sahibi olarak parolasız gir</button><span class="msg" id="lg_msg"></span></div></div>
 <div id="viewer" hidden><div class="vw-in"><div class="row sp" style="margin-bottom:10px"><b>Belge</b><button class="btn ghost small" data-act="vclose">Kapat</button></div><div id="vw_b"></div></div></div>
 <div id="nowarn" class="empty" hidden style="position:fixed;left:16px;right:16px;top:30vh;z-index:25">Bu kullanıcının rolü tanımlı değil ya da hiçbir sekmeye yetkisi yok. Yöneticinize başvurun.</div>
@@ -2064,16 +2064,19 @@ document.addEventListener('click',async function(e){var t=e.target,a=t.dataset&&
   if(a==='pwcancel'){pwOpen=false;gate();return}
   if(a==='pwsave'){var pm=$('pw_msg'),o=$('pw_old').value,n1=$('pw_new').value,n2=$('pw_new2').value;
     if(!me||me.id==='owner')return;
+    if(window.__finaleStandalone&&window.__finaleSifre){if(n1.length<8){pm.textContent='Yeni parola en az 8 karakter olmalı.';return}if(n1!==n2){pm.textContent='Yeni parolalar aynı değil.';return}
+      var sr=await window.__finaleSifre(o,n1);if(!sr.ok){pm.textContent=sr.status===403?'Mevcut parola hatalı.':sr.status===429?'Çok fazla hatalı deneme; 15 dakika sonra tekrar deneyin.':'Kaydedilemedi: '+(sr.error||sr.status);return}
+      me=Object.assign({},me,{mustChange:0,resetReq:0});pwOpen=false;['pw_old','pw_new','pw_new2'].forEach(function(k){$(k).value=''});pm.textContent='';gate();toast('Parola değiştirildi ✓ Diğer cihazlardaki oturumlar kapatıldı.');return}
     var oh=await pinHash(me.salt||'',o);if(oh!==me.pinHash){pm.textContent='Mevcut parola hatalı.';return}
-    if(n1.length<4){pm.textContent='Yeni parola en az 4 karakter olmalı.';return}
+    if(n1.length<8){pm.textContent='Yeni parola en az 8 karakter olmalı.';return}
     if(n1!==n2){pm.textContent='Yeni parolalar aynı değil.';return}
     try{var ns=Math.random().toString(36).slice(2,10),nh=await pinHash(ns,n1);
       await db.doc('appusers/'+me.id).update({salt:ns,pinHash:nh,mustChange:0,resetReq:0});
       me=Object.assign({},me,{salt:ns,pinHash:nh,mustChange:0,resetReq:0});pwOpen=false;['pw_old','pw_new','pw_new2'].forEach(function(k){$(k).value=''});pm.textContent='';gate()}
     catch(er){pm.textContent='Kaydedilemedi: '+((er&&er.code)||er)}return}
-  if(a==='logout'){me=null;sess('');coSelFill();coApply();return}
+  if(a==='logout'){if(window.__finaleStandalone&&window.__finaleCikis){window.__finaleCikis();return}me=null;sess('');coSelFill();coApply();return}
   if(a==='auadd'){var m=$('au_msg'),nm=$('au_name').value.trim(),rl=$('au_role').value,pin=$('au_pin').value;
-    if(!nm){m.textContent='Kullanıcının adını yazın.';return}if(pin.length<4){m.textContent='Parola en az 4 karakter olmalı.';return}
+    if(!nm){m.textContent='Kullanıcının adını yazın.';return}if(pin.length<8){m.textContent='Parola en az 8 karakter olmalı.';return}
     if(appusers.some(function(u){return pnorm(u.name)===pnorm(nm)})){m.textContent='Bu adla bir kullanıcı zaten var.';return}
     var d={name:nm,role:rl,active:1,created:Date.now(),partyId:'',lead:$('au_lead').value,email:$('au_mail').value.trim()};
     if(!hasAdmin(appusers.concat([d]),roles())){m.textContent='İlk kullanıcının rolünde Ayarlar sekmesi olmalı (örneğin Yönetici); yoksa kimse ayarlara giremez.';return}
@@ -2083,7 +2086,7 @@ document.addEventListener('click',async function(e){var t=e.target,a=t.dataset&&
     catch(er){m.textContent='Eklenemedi: '+((er&&er.code)||er)}return}
   if(a==='ausave'){var id=t.dataset.id,u=appusers.filter(function(q){return q.id===id})[0],m2=$('au_msg');if(!u)return;
     var up={name:$('aun_'+id).value.trim()||u.name,role:$('aur_'+id).value,lead:$('aul_'+id).value,email:$('aue_'+id).value.trim(),active:$('aua_'+id).checked?1:0},np=$('aup_'+id).value;
-    if(np&&np.length<4){m2.textContent='Parola en az 4 karakter olmalı.';return}
+    if(np&&np.length<8){m2.textContent='Parola en az 8 karakter olmalı.';return}
     if(!hasAdmin(appusers.map(function(q){return q.id===id?Object.assign({},q,up):q}),roles())){m2.textContent='Ayarlar yetkisi olan en az bir etkin kullanıcı kalmalı.';return}
     try{if(np){up.salt=Math.random().toString(36).slice(2,10);up.pinHash=await pinHash(up.salt,np);up.mustChange=1;up.resetReq=0}
       await db.doc('appusers/'+id).update(up);m2.textContent='Kullanıcı güncellendi ✓';if(document.activeElement)document.activeElement.blur();auRender(true)}catch(er){m2.textContent='Kaydedilemedi: '+((er&&er.code)||er)}return}

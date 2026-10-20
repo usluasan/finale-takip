@@ -196,3 +196,10 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [20 Ekim] Canli giris tamam
   - https://apps.finale.com.tr/finale/ adresinden giris yaptin, sunucuda oturumun goruldu. Kurulum tamamlandi.
+
+[20 Ekim] Giris artik kullanici adi ve sifreyle
+  - "Sunucu giris anahtari" ekrani ve "parolasiz gir" dugmesi kaldirildi. Herkes kendi kullanici adi ve sifresiyle girer.
+  - Sifreyi sunucu kontrol ediyor; sifre bilgileri artik hic kimsenin tarayicisina gonderilmiyor ve daha guclu sekilde saklaniyor.
+  - Yeni sifreler en az 8 karakter. Sifre degisince diger cihazlardaki oturumlar kapanir.
+  - Sifre unutulursa: sunucuda tek komutla yeni sifre verilir (deploy/DEPLOY.md, "Giris ve acil durum").
+  - Not: guncellemeden sonra herkes bir kez kullanici adi ve sifresiyle yeniden girecek.
