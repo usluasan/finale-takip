@@ -1369,7 +1369,7 @@ document.addEventListener('change',function(e){var t=e.target,c=t.classList;if(!
 document.addEventListener('input',function(e){var t=e.target;if(t.id==='bkf_q')$('bkTxL').innerHTML=vBnTx();else if(t.id==='kkf_q')$('kkTxL').innerHTML=vKkTx()});
 
 function cvWhen(ms){try{return new Date(ms).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
-function cvLogAdd(p,act,name){return (p.cvLog||[]).concat([{at:Date.now(),by:(me&&me.name)||'',act:act,name:name||''}]).slice(-50)}
+function cvLogAdd(p,act,name,ek){return (p.cvLog||[]).concat([Object.assign({at:Date.now(),by:(me&&me.name)||'',act:act,name:name||''},ek||{})]).slice(-50)}
 function vCv(){if(!parLoaded)return '<div class="empty">Yükleniyor…</div>';if(!canCv())return '';
   var L=parties.filter(function(p){return p.role==='P'}).sort(function(a,b){return a.code<b.code?-1:1});
   if(!L.length)return '<div class="empty">Henüz personel kartı yok. Cariler sekmesinden rolü "Personel" seçerek ekleyin.</div>';
@@ -1380,13 +1380,73 @@ function vCv(){if(!parLoaded)return '<div class="empty">Yükleniyor…</div>';if
       (has?'<button class="btn danger small" data-act="cvdel" data-id="'+esc(p.id)+'">CV sil</button>':'')+'</td>'+
       '<td style="max-width:240px;overflow-wrap:anywhere">'+(has?esc(p.cvName||'cv'):'<span class="msg">Yok</span>')+'</td>'+
       '<td>'+(p.cvAt?esc(cvWhen(p.cvAt))+'<div class="msg">'+esc(p.cvBy||'')+'</div>':'<span class="msg">—</span>')+
-      (lg.length?'<details><summary class="msg" style="cursor:pointer">Geçmiş ('+lg.length+')</summary>'+lg.map(function(x){return '<div class="msg" style="overflow-wrap:anywhere">'+esc(cvWhen(x.at))+' · '+esc(x.act)+' · '+esc(x.by||'—')+(x.name?' · '+esc(x.name):'')+'</div>'}).join('')+'</details>':'')+'</td></tr>'}).join('')+'</table></div>'}
+      (lg.length?'<details><summary class="msg" style="cursor:pointer">Geçmiş ('+lg.length+')</summary>'+lg.map(function(x){return '<div class="msg" style="overflow-wrap:anywhere">'+esc(cvWhen(x.at))+' · '+esc(x.act)+' · '+esc(x.by||'—')+(x.name?' · '+esc(x.name):'')+(x.oid&&/^[A-Za-z0-9_-]{8,64}$/.test(x.oid)?' <button class="btn ghost small" data-act="view" data-img="'+esc(x.oid)+'" data-kind="'+esc(x.okind||'file')+'" data-name="'+esc(x.oname||'cv')+'" data-n="'+(+x.on||0)+'">Orijinal</button>':'')+'</div>'}).join('')+'</details>':'')+'</td></tr>'}).join('')+'</table></div>'}
 document.addEventListener('change',async function(e){var t=e.target;if(!t.classList||!t.classList.contains('cvfile'))return;
   var f=t.files&&t.files[0],m=$('cv_msg');if(!f)return;if(!canCv()){m.textContent='CV ekleme yetkiniz yok.';return}
   var isPdf=/pdf/i.test(f.type||'')||/\.pdf$/i.test(f.name||''),isImg=/^image\//.test(f.type||'');if(!isPdf&&!isImg&&!isDocF(f)){m.textContent='Bu dosya türü saklanamıyor. PDF, Word veya görsel yükleyin.';t.value='';return}if(f.size>20*1048576){m.textContent='Dosya 20 MB sınırını aşıyor.';t.value='';return}
   var po=parties.filter(function(q){return q.id===t.dataset.id})[0]||{},d=await upCv(f,m);if(!d){m.textContent='CV yüklenemedi (hata: '+(cvErr||'bilinmiyor')+').';t.value='';return}
   var act=po.cv?'Güncelleme':'Yükleme';if(po.cvKind==='doc')cvChunksDel(po);d.cvAt=Date.now();d.cvBy=(me&&me.name)||'';d.cvLog=cvLogAdd(po,act,f.name);
-  try{await db.doc('parties/'+t.dataset.id).update(d);m.textContent='CV '+(act==='Güncelleme'?'güncellendi':'kaydedildi')+' ✓ ('+f.name+')'}catch(er){m.textContent='Kaydedilemedi: '+((er&&er.code)||er)}});
+  try{await db.doc('parties/'+t.dataset.id).update(d);m.textContent='CV '+(act==='Güncelleme'?'güncellendi':'kaydedildi')+' ✓ ('+f.name+')';t.value='';if(window.__finaleStandalone)cvDonustur(t.dataset.id,f,d)}catch(er){m.textContent='Kaydedilemedi: '+((er&&er.code)||er)}});
+/* ==== CV'yi Finale formatına çevirme (yalnız bağımsız uygulamada; sunucu: api/cv/*) ====
+   Orijinal dosya önce olduğu gibi kaydedilir; sonra yapay zekâ alanları doldurur, kullanıcı düzeltip onaylar,
+   Finale şablonundaki PDF ana CV olur ve orijinal değişiklik geçmişinden açılabilir. */
+var cvDon=null;
+var CVD_IS='background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:inherit;width:100%;box-sizing:border-box';
+var CVD_P=[['musteri','Müşteri'],['sure','Devam süresi'],['sektor','Sektör'],['proje','Proje tanımı'],['gorev','Projedeki görevi'],['sorumluluklar','Sorumluluklar']];
+var CVD_HATA={anahtar_yok:'Sunucuda yapay zekâ anahtarı tanımlı değil.',anahtar_gecersiz:'Yapay zekâ anahtarı geçersiz.',yogun:'Yapay zekâ şu an yoğun; biraz sonra tekrar deneyin.',reddedildi:'Yapay zekâ bu belgeyi işlemeyi reddetti.',cok_uzun:'CV çok uzun; yanıt yarıda kaldı.',cozumlenemedi:'Yapay zekânın yanıtı okunamadı.',baglanti:'Yapay zekâ servisine bağlanılamadı.',istek_hatali:'Belge yapay zekâya gönderilemedi (desteklenmeyen ya da bozuk dosya).',gorsel_turu:'Bu görsel türü desteklenmiyor.',bos_metin:'Belgeden metin çıkarılamadı.'};
+function cvdBos(){return {ad:'',unvan:'',telefon:'',eposta:'',profil:'',ozet:[],projeler:[],kisisel:[]}}
+async function cvDonustur(pid,f,orj){var m=$('cv_msg'),du=null;
+  try{var rr=await fetch('api/cv/durum',{credentials:'same-origin'});du=rr.ok?await rr.json():null}catch(e){du=null}
+  if(!du||!du.pdf){m.textContent+=' · Finale formatına çevirme bu sunucuda kapalı (PDF üretici yok).';return}
+  var po=parties.filter(function(q){return q.id===pid})[0]||{};
+  cvDon={pid:pid,orj:orj,ad:f.name||'cv',veri:null};
+  $('viewer').hidden=false;$('vw_b').innerHTML='<div class="row sp" style="margin-bottom:6px"><b>Finale formatına çevir · '+esc(po.name||'')+'</b></div><p class="msg" id="cvd_st"></p><div id="cvd_f"></div>';
+  var st=function(x){var e=$('cvd_st');if(e)e.textContent=x};
+  if(!du.ai){st('Sunucuda yapay zekâ anahtarı tanımlı değil; alanları elle doldurabilir ya da orijinali olduğu gibi bırakabilirsiniz.');cvdCiz(cvdBos());return}
+  st('Yapay zekâ CV\'yi okuyor… (yarım dakika kadar sürebilir; orijinal dosya zaten kaydedildi)');
+  var girdi=null;
+  try{if(/pdf/i.test(f.type||'')||/\.pdf$/i.test(f.name||''))girdi={tur:'pdf',veri:b64(await f.arrayBuffer())};
+    else if(/^image\//.test(f.type||'')){var im=await shrink(f);girdi={tur:'gorsel',mime:im.type||'image/jpeg',veri:b64(await im.arrayBuffer())}}
+    else if(/\.docx$/i.test(f.name||'')||/wordprocessingml/i.test(f.type||'')){var mm=await loadMammoth(),tx=await mm.extractRawText({arrayBuffer:await f.arrayBuffer()});girdi={tur:'metin',metin:tx.value||''}}
+  }catch(e){girdi=null}
+  if(!girdi){st('Bu dosyanın içeriği okunamadı (eski .doc biçimi olabilir). Alanları elle doldurabilir ya da orijinali bırakabilirsiniz.');cvdCiz(cvdBos());return}
+  try{var r=await fetch('api/cv/ayikla',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(girdi),credentials:'same-origin'}),j=await r.json().catch(function(){return {}});
+    if(!cvDon||cvDon.pid!==pid)return;
+    if(!r.ok){st((CVD_HATA[j.error]||('Yapay zekâ alanları dolduramadı ('+(j.error||r.status)+').'))+' Alanları elle doldurabilir ya da orijinali bırakabilirsiniz.');cvdCiz(cvdBos());return}
+    st('Yapay zekâ alanları doldurdu. Lütfen kontrol edip düzeltin; onayladığınızda Finale formatındaki PDF ana CV olur, orijinal geçmişte kalır.');cvdCiz(j.veri||cvdBos())}
+  catch(e){st('Sunucuya ulaşılamadı. Alanları elle doldurabilir ya da orijinali bırakabilirsiniz.');cvdCiz(cvdBos())}}
+function cvdAlan(id,lbl,v,ta,rows){return '<label class="msg" style="display:flex;flex-direction:column;gap:3px">'+lbl+(ta?'<textarea id="'+id+'" rows="'+(rows||3)+'" style="'+CVD_IS+';resize:vertical">'+esc(v||'')+'</textarea>':'<input id="'+id+'" value="'+esc(v||'')+'" style="'+CVD_IS+'">')+'</label>'}
+function cvdCiz(v){cvDon.veri=v;var G='display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px';
+  var h='<div style="display:flex;flex-direction:column;gap:12px;max-height:68vh;overflow:auto;padding-right:4px">'
+    +'<div style="'+G+'">'+cvdAlan('cvd_ad','Ad soyad',v.ad)+cvdAlan('cvd_unvan','Unvan',v.unvan)+cvdAlan('cvd_tel','Telefon',v.telefon)+cvdAlan('cvd_mail','E-posta',v.eposta)+'</div>'
+    +cvdAlan('cvd_profil','Profil',v.profil,1,5)+cvdAlan('cvd_ozet','SAP deneyimleri özeti (her satır bir madde)',(v.ozet||[]).join('\n'),1,4)
+    +'<div><b style="font-size:14px">Projeler ('+(v.projeler||[]).length+')</b></div>'
+    +(v.projeler||[]).map(function(p,i){return '<div style="border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px"><div class="row sp"><span class="msg">Proje '+(i+1)+'</span><span><button class="btn ghost small" data-act="cvdyuk" data-i="'+i+'" title="Yukarı taşı">↑</button> <button class="btn danger small" data-act="cvdsil" data-i="'+i+'">Sil</button></span></div><div style="'+G+'">'
+      +CVD_P.filter(function(k){return k[0]!=='sorumluluklar'}).map(function(k){return cvdAlan('cvd_p'+i+'_'+k[0],k[1],p[k[0]])}).join('')+'</div>'+cvdAlan('cvd_p'+i+'_sorumluluklar','Sorumluluklar',p.sorumluluklar,1,2)+'</div>'}).join('')
+    +'<div><button class="btn ghost small" data-act="cvdekle">+ Proje ekle</button></div>'
+    +cvdAlan('cvd_kis','Kişisel bilgiler (her satır "Başlık: Değer", ör. Eğitim: …)',(v.kisisel||[]).map(function(k){return k.baslik+': '+k.deger}).join('\n'),1,4)
+    +'</div><div class="row" style="margin-top:10px"><button class="btn" data-act="cvdkaydet">Finale PDF oluştur ve kaydet</button><button class="btn ghost" data-act="cvdiptal">Orijinal kalsın</button><span class="msg" id="cvd_msg"></span></div>';
+  $('cvd_f').innerHTML=h}
+function cvdTopla(){var g=function(id){var e=$(id);return e?e.value.trim():''},v={ad:g('cvd_ad'),unvan:g('cvd_unvan'),telefon:g('cvd_tel'),eposta:g('cvd_mail'),profil:g('cvd_profil'),
+    ozet:g('cvd_ozet').split('\n').map(function(x){return x.trim()}).filter(Boolean),projeler:[],kisisel:[]};
+  (cvDon.veri.projeler||[]).forEach(function(_,i){var p={};CVD_P.forEach(function(k){p[k[0]]=g('cvd_p'+i+'_'+k[0])});v.projeler.push(p)});
+  g('cvd_kis').split('\n').forEach(function(l){l=l.trim();if(!l)return;var k=l.indexOf(':');v.kisisel.push(k>0?{baslik:l.slice(0,k).trim(),deger:l.slice(k+1).trim()}:{baslik:'',deger:l})});
+  return v}
+document.addEventListener('click',async function(e){var t=e.target,a=t.dataset&&t.dataset.act;if(!a||a.indexOf('cvd')!==0||!cvDon)return;
+  if(a==='cvdiptal'){cvDon=null;$('viewer').hidden=true;$('vw_b').innerHTML='';$('cv_msg').textContent='CV orijinal hâliyle kaldı.';return}
+  if(a==='cvdekle'||a==='cvdsil'||a==='cvdyuk'){var v=cvdTopla(),i=+t.dataset.i;
+    if(a==='cvdekle')v.projeler.push({musteri:'',sure:'',sektor:'',proje:'',gorev:'',sorumluluklar:''});
+    if(a==='cvdsil')v.projeler.splice(i,1);
+    if(a==='cvdyuk'&&i>0){var x=v.projeler[i];v.projeler[i]=v.projeler[i-1];v.projeler[i-1]=x}
+    cvdCiz(v);return}
+  if(a==='cvdkaydet'){var mm=$('cvd_msg'),v2=cvdTopla();if(!v2.ad){mm.textContent='Ad soyad boş olamaz.';return}
+    t.disabled=true;mm.textContent='PDF hazırlanıyor…';
+    try{var r=await fetch('api/cv/pdf',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({veri:v2,ad:v2.ad.toLocaleUpperCase('tr-TR')+'_CV_Finale'}),credentials:'same-origin'}),j=await r.json().catch(function(){return {}});
+      if(!r.ok||!j.id){t.disabled=false;mm.textContent='PDF oluşturulamadı ('+(j.error||r.status)+'). Orijinal CV kayıtlı duruyor.';return}
+      var po=parties.filter(function(q){return q.id===cvDon.pid})[0]||{},o=cvDon.orj||{};
+      await db.doc('parties/'+cvDon.pid).update({cv:j.id,cvName:j.ad,cvKind:'pdf',cvN:0,cvAt:Date.now(),cvBy:(me&&me.name)||'',cvLog:cvLogAdd(po,'Finale formatına çevrildi',j.ad,{oid:o.cv||'',okind:o.cvKind||'',on:o.cvN||0,oname:cvDon.ad})});
+      cvDon=null;$('viewer').hidden=true;$('vw_b').innerHTML='';$('cv_msg').textContent='CV Finale formatına çevrildi ✓ ('+j.ad+'). Orijinal dosya değişiklik geçmişinde "Orijinal" düğmesiyle açılabilir.'}
+    catch(er){t.disabled=false;mm.textContent='Kaydedilemedi: '+((er&&er.code)||er)+'. Orijinal CV kayıtlı duruyor.'}}});
 function cariClear(){cEdit=null;$('c_mb').checked=false;['c_name','c_vkn','c_vd','c_term','c_note'].forEach(function(k){$(k).value=''});$('c_role').disabled=false;$('c_msg').textContent=''}
 async function cariSave(){var m=$('c_msg'),role=$('c_role').value,name=$('c_name').value.trim(),v=vclean($('c_vkn').value);
   if(!name){m.textContent='Unvanı girin.';return}
@@ -1870,7 +1930,7 @@ document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.data
         renderPdf(cvCur.blob,$('pdfbox')).catch(function(){var pb=$('pdfbox');if(pb)pb.innerHTML='<span class="msg">Önizleme bu görünümde açılamadı; dosyayı "Kaydet / indir" ile alabilirsiniz.</span>'})})
       .catch(function(){$('vw_b').innerHTML='<p class="msg">Dosya açılamadı. <a href="_blob/'+id+'" target="_blank" rel="noopener">Doğrudan bağlantıyı deneyin</a>.</p>'})}
     else if(t.dataset.kind==='doc'){var dn=t.dataset.name||'cv.docx';$('vw_b').innerHTML='<p class="msg" id="vw_st">Dosya hazırlanıyor…</p>';
-      (async function(){try{var pr=parties.concat(contractsAll).filter(function(q){return (q.cv||q.file)===id})[0],n=(pr&&(pr.cvN||pr.fileN))||1,parts=[];
+      (async function(){try{var pr=parties.concat(contractsAll).filter(function(q){return (q.cv||q.file)===id})[0],n=(+t.dataset.n)||(pr&&(pr.cvN||pr.fileN))||1,parts=[];
         for(var i=0;i<n;i++){var sn=await db.doc('cvblobs/'+id+'_'+i).get(),dd=sn&&(sn.data?sn.data():sn);if(!dd||!dd.d)throw 0;parts.push(dd.d)}
         var bin=atob(parts.join('')),u8=new Uint8Array(bin.length);for(var k=0;k<bin.length;k++)u8[k]=bin.charCodeAt(k);
         cvCur={blob:new Blob([u8],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}),name:dn};

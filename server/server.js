@@ -3,6 +3,7 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const {DatabaseSync}=require('node:sqlite');
 const sifre=require('./sifre');
+const cv=require('./cv');   // CV'yi Finale formatına çevirme (yapay zekâ + PDF)
 const PORT=+process.env.PORT||8080;
 const DATA=process.env.DATA_DIR||path.join(__dirname,'..','veri');
 const ADMIN_KEY=process.env.ADMIN_KEY||'';  // yalnızca acil durum/yönetim betikleri için (x-key başlığı); ekranda giriş yolu yok
@@ -81,6 +82,16 @@ http.createServer(async(req,res)=>{
         if(yeni.length<sifre.EN_AZ)return J(res,400,{error:'sifre_kisa',min:sifre.EN_AZ});
         d.pinHash=sifre.ozetle(yeni);delete d.salt;d.mustChange=0;d.resetReq=0;q.put.run('appusers',e.u.id,JSON.stringify(d));
         q.sdelUid.run(e.u.id,cookieTok(req));emit('appusers');return J(res,200,{ok:1})}  // diğer cihazlardaki oturumlar kapanır
+      // CV dönüştürme: durum, yapay zekâ ile alan çıkarma, Finale PDF'i üretip dosya deposuna kaydetme
+      if(p==='/api/cv/durum')return J(res,200,cv.durum());
+      if(p==='/api/cv/ayikla'&&req.method==='POST'){
+        try{const b=JSON.parse((await body(req,40e6)).toString()||'{}');const r=await cv.ayikla(b);return J(res,200,{ok:1,veri:r.veri,model:r.model,kullanim:r.kullanim})}
+        catch(e){console.error('CV ayıklama hatası:',e.kod||'',e.message);return J(res,e.kod==='anahtar_yok'?503:422,{error:e.kod||'hata',mesaj:String(e.message||'').slice(0,300)})}}
+      if(p==='/api/cv/pdf'&&req.method==='POST'){
+        try{const b=JSON.parse((await body(req,2e6)).toString()||'{}');const pdf=await cv.pdfUret(b.veri||{}),id=rid();
+          const ad=String(b.ad||'CV').replace(/[^\p{L}\p{N} ._()-]/gu,'').trim().slice(0,120)||'CV';
+          fs.writeFileSync(path.join(DATA,'blobs',id),pdf);q.bput.run(id,'application/pdf',ad+'.pdf',pdf.length);return J(res,200,{ok:1,id,ad:ad+'.pdf',boyut:pdf.length})}
+        catch(e){console.error('CV PDF hatası:',e.kod||'',e.message);return J(res,e.kod==='chrome_yok'?503:500,{error:e.kod||'hata'})}}
       if(p==='/api/events'){res.writeHead(200,{'content-type':'text/event-stream','cache-control':'no-store',connection:'keep-alive','x-accel-buffering':'no'});res.write('retry: 3000\n\n');clients.add(res);const t=setInterval(()=>{try{res.write(': ping\n\n')}catch(e){}},25000);req.on('close',()=>{clearInterval(t);clients.delete(res)});return}
       let m;
       if(m=/^\/api\/c\/([^/]+)$/.exec(p)){const col=decodeURIComponent(m[1]);if(!okName(col))return J(res,400,{error:'name'});

@@ -2,4 +2,5 @@
 *
 !server/
 !web/
+server/node_modules
 server/**/*.log

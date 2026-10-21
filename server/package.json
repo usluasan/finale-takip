@@ -1,0 +1,9 @@
+{
+  "name": "finale-takibi-sunucu",
+  "private": true,
+  "description": "Finale Takibi sunucusu; tek bağımlılık CV dönüştürme için Anthropic SDK",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.131.0"
+  }
+}

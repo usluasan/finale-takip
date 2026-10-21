@@ -225,3 +225,11 @@ Yeni degisiklikler EN ALTA eklenir.
   - Masrafi musteriye fatura etme ozelligi https://apps.finale.com.tr/finale/ adresinde. Oncesinde veri yedegi alindi.
   - Kullanicilarin oturumlari kapanmadi.
   - Dikkat: sistemde henuz hic proje yok; kutuyu kullanmak icin once Aktiviteler > Projeler bolumunden proje ekleyin.
+
+[21 Ekim] CV'ler otomatik Finale formatina cevriliyor
+  - Ozgecmisler'de bir CV yukleyince once dosya oldugu gibi kaydedilir, sonra bir ekran acilir.
+  - Yapay zeka (Claude) CV'yi okuyup ad, unvan, profil, ozet, projeler ve kisisel bilgileri doldurur.
+  - Sen kontrol edip duzeltirsin (proje ekleyip silebilir, sirasini degistirebilirsin), "Finale PDF olustur" dersin.
+  - Finale formatindaki PDF ana CV olur; orijinal dosya degisiklik gecmisinde "Orijinal" dugmesiyle acilir.
+  - Istersen "Orijinal kalsin" diyerek cevirmeden de birakabilirsin.
+  - Gerekli: sunucuya bir Claude API anahtari eklenmesi. Anahtar yoksa ekran yine acilir, alanlari elle doldurursun.
