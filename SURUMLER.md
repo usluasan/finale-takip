@@ -272,3 +272,33 @@ Personel masraflarında **masrafı müşteriye fatura etme** işareti. claude.ai
 - Toplu masraf yükleme (Excel yapıştırma) bu alanları almıyor.
 - v0.5.0'daki eksikler sürüyor (roller sunucuda kontrol edilmiyor).
 
+---
+
+## v0.7.0 Hopper — 21 Ekim 2026
+
+**CV'yi Finale formatına çevirme.** claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- CV yüklenince orijinal kaydedilir, onay ekranı açılır; yapay zekâ (Claude, `claude-opus-5-5`) alanları doldurur (PDF, görsel, Word).
+- Kullanıcı alanları düzeltir, proje ekler/siler/sıralar; "Finale PDF oluştur ve kaydet" ile Finale şablonundaki PDF ana CV olur.
+- Orijinal dosya değişiklik geçmişinde "Orijinal" düğmesiyle açılır; "Orijinal kalsın" ile çevirmeden bırakılabilir.
+- Sunucu: `/api/cv/durum`, `/api/cv/ayikla`, `/api/cv/pdf`; tek bağımlılık `@anthropic-ai/sdk` 0.131.0; Docker imajında Chromium.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `429e0fd` | C051 | CV'yi yapay zekâ ile Finale formatına çevirme |
+| `dd0f894` | C052 | Kurulum notları |
+| C053 commit'i (`git log --grep=C053`) | C053 | Sürüm v0.7.0 Hopper — **`v0.7.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi: sahte Claude API ile istek/yanıt; tarayıcıda yükleme → onay → düzenleme → PDF → geçmişte orijinal; PDF önizleme; Docker imajında Chromium ile PDF ve SDK.
+- Test edilmedi: gerçek Claude API çağrısı ve ayıklama kalitesi (anahtar gerekiyor), canlı sunucu.
+
+**Bilinen eksikler**
+- Yapay zekâ için sunucuya `ANTHROPIC_API_KEY` eklenmeli; yoksa alanlar elle doldurulur.
+- Eski .doc (Word 97-2003) dosyalarının içeriği okunamaz; alanlar elle doldurulur.
+- Docker imajı Chromium yüzünden ~1,4 GB.
+- CV başına yapay zekâ maliyeti oluşur; kullanım sınırı yok.
+

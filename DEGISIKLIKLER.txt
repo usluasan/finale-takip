@@ -233,3 +233,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - Finale formatindaki PDF ana CV olur; orijinal dosya degisiklik gecmisinde "Orijinal" dugmesiyle acilir.
   - Istersen "Orijinal kalsin" diyerek cevirmeden de birakabilirsin.
   - Gerekli: sunucuya bir Claude API anahtari eklenmesi. Anahtar yoksa ekran yine acilir, alanlari elle doldurursun.
+
+[21 Ekim] Surum v0.7.0 Hopper
+  - CV'yi Finale formatina cevirme ozelligiyle surum v0.6.0'dan v0.7.0 Hopper'a cikti.
