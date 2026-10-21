@@ -11,6 +11,8 @@ Gerekli: Node.js 22.5 veya üstü (https://nodejs.org). Başka paket kurmak gere
 
 Yönetim anahtarı kuralı: `ADMIN_KEY` tanımlanırsa en az 16 karakter olmalı ve yer tutucu ("BURAYA-...") olmamalı; aksi halde sunucu açılmaz. Yerel denemede `ALLOW_WEAK_KEYS=1` ile atlanabilir.
 Sunucuya (apps.finale.com.tr/finale/) kurulum: `deploy/DEPLOY.md`.
+
+**CV'yi Finale formatına çevirme (v0.7.0):** Özgeçmişler'de CV yüklenince orijinal kaydedilir ve bir onay ekranı açılır; yapay zekâ (Claude) alanları doldurur, siz düzeltip onaylarsınız, Finale şablonundaki PDF ana CV olur, orijinal geçmişten açılır. Gerekenler: sunucuda `ANTHROPIC_API_KEY` (yoksa alanlar elle doldurulur) ve PDF için Chromium (Docker imajında kurulu; Mac'te Google Chrome kullanılır). Yerelde çalıştırmadan önce bir kez `server` klasöründe `npm ci`.
 - Docker: `docker-compose.yml` içindeki anahtarları değiştirip `docker compose up -d`
 
 **Giriş (v0.5.0):** herkes uygulamadaki **kullanıcı adı ve şifresiyle** girer; şifreyi sunucu doğrular, şifre özetleri tarayıcıya hiç gönderilmez. Şifreler en az 8 karakter. 15 dakikada 10 hatalı denemede o adres 15 dakika engellenir.

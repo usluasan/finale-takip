@@ -73,6 +73,13 @@ python3 -c "import sqlite3;s=sqlite3.connect('file:veri/finale.db?mode=ro',uri=T
 
 `veri/blobs/` doluysa o klasör de `/data/blobs/` altına taşınır (20 Ekim 2026 itibarıyla boş).
 
+## CV dönüştürme (v0.7.0)
+
+- Yapay zekâ anahtarı sunucudaki `/opt/docker/finale/finale-takip.env` dosyasına `ANTHROPIC_API_KEY=...` satırıyla eklenir (Hasan kendi Terminal'inde, ekranda göstermeden), ardından `up -d --force-recreate`.
+- Anahtar yoksa çevirme ekranı açılır ama alanları kullanıcı doldurur; PDF üretimi yine çalışır.
+- Model `claude-opus-5-5`; CV başına tahmini maliyet birkaç on sent (CV uzunluğuna göre). CV içeriği Anthropic API'ye gönderilir.
+- İmaj Chromium nedeniyle yaklaşık 1,4 GB'tır.
+
 ## Kabul testleri
 
 ```bash
