@@ -236,3 +236,9 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [21 Ekim] Surum v0.7.0 Hopper
   - CV'yi Finale formatina cevirme ozelligiyle surum v0.6.0'dan v0.7.0 Hopper'a cikti.
+
+[21 Ekim] v0.7.0 canlida
+  - CV yukleyince Finale formatina cevirme ekrani canli sistemde acilir. Oncesinde veri yedegi alindi.
+  - Kesinti yaklasik 30 saniye surdu, oturumlar kapanmadi.
+  - Yapay zekanin alanlari kendisi doldurmasi icin sunucuya Claude API anahtari eklenmesi gerekiyor.
+    Anahtar eklenene kadar ekran acilir ama alanlari elle doldurursun.
