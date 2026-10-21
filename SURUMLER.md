@@ -245,3 +245,30 @@ Giriş artık **kullanıcı adı + şifreyle**; doğrulamayı sunucu yapıyor. c
 - Mevcut kısa şifreler (8'den az) bir sonraki değişikliğe kadar çalışır.
 - Güncellemeden sonra herkes bir kez yeniden giriş yapar.
 
+---
+
+## v0.6.0 Lovelace — 21 Ekim 2026
+
+Personel masraflarında **masrafı müşteriye fatura etme** işareti. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Masraf girişinde "Müşteriye fatura edilecek" kutusu; işaretlenince proje seçilir, fatura müşterisi projeden gelir (projede ayrı fatura müşterisi varsa o).
+- Listelerde (masraf kayıtları, Masraflarım, onay bekleyenler) "Fatura: müşteri · proje" etiketi; Excel'de üç yeni sütun.
+- Personel kendi masrafını girerken işaretleyebilir; onaylayan düzenleyebilir.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| C048 commit'i (`git log --grep=C048`) | C048 | Masrafı müşteriye fatura etme |
+| C049 commit'i (`git log --grep=C049`) | C049 | Sürüm v0.6.0 Lovelace — **`v0.6.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi (gerçek veri kopyası + test projeleri): yönetici ve personel akışı, müşteri seçimi, doğrulama, düzenleme, etiketler, onay listesi.
+- Test edilmedi: Excel dosya içeriği, claude.ai artifact.
+
+**Bilinen eksikler**
+- Fatura edilecek masraflardan otomatik fatura taslağı oluşturulmuyor (yalnız işaretleme ve raporlama).
+- Toplu masraf yükleme (Excel yapıştırma) bu alanları almıyor.
+- v0.5.0'daki eksikler sürüyor (roller sunucuda kontrol edilmiyor).
+
