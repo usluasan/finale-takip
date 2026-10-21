@@ -260,3 +260,7 @@ Yeni degisiklikler EN ALTA eklenir.
 [21 Ekim] Duzeltme: arka planda biriken PDF surecleri (v0.8.2)
   - CV PDF'i her uretildiginde arka planda "olu" surecler kaliyordu; zamanla birikip sunucuyu yorardi.
     Uygulama artik bunlari temizleyen bir yardimciyla calisiyor.
+
+[21 Ekim] v0.8.2 canlida: iki asamali masraf onayi
+  - Personel masraflari artik once ekip liderine, sonra muhasebeye gidiyor. Oncesinde veri yedegi alindi.
+  - Kesinti yaklasik 20 saniye, oturumlar kapanmadi.
