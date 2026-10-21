@@ -242,3 +242,10 @@ Yeni degisiklikler EN ALTA eklenir.
   - Kesinti yaklasik 30 saniye surdu, oturumlar kapanmadi.
   - Yapay zekanin alanlari kendisi doldurmasi icin sunucuya Claude API anahtari eklenmesi gerekiyor.
     Anahtar eklenene kadar ekran acilir ama alanlari elle doldurursun.
+
+[21 Ekim] Masraflarda iki asamali onay: ekip lideri -> muhasebe
+  - Personelin girdigi masraf once kendi ekip liderinin onayina gider ("Onayla, muhasebeye gonder").
+  - Lider onaylayinca masraf muhasebenin onayina duser; muhasebe onaylayinca odeme sirasina girer.
+  - Ekip lideri olmayan personelin masrafi dogrudan muhasebeye gider.
+  - Her asamada neden yazarak reddedilebilir; personel kendi ekraninda masrafin hangi asamada oldugunu gorur.
+  - Muhasebe herkesin masrafini gorur; ekip lideri sadece kendi ekibininkini.

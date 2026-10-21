@@ -1617,7 +1617,7 @@ async function xSave(){if(xsaving)return;var m=$('x_msg'),g=function(k){return $
   try{var pc=await ensurePartyRole('P',g('x_person'),''),pcard=parties.filter(function(q){return q.id===pc.id})[0];
     var data={partyId:pc.id,partyCode:pc.code,person:g('x_person'),date:g('x_date'),cat:$('x_cat').value,desc:g('x_desc'),vendor:g('x_vendor'),no:g('x_no'),total:Math.round(tot*100)/100,vat:isNaN(vat)?0:Math.round(vat*100)/100,receipt:$('x_rc').checked?1:0,due:g('x_due')||(hasTerm(pcard)?dueFor(pcard,g('x_date')):g('x_date')),paid:old?(old.paid?1:0):0,paidDate:old&&old.paidDate||'',created:old&&old.created||Date.now()};
     var bc=xPrjCust(bp);data.bill=bp?1:0;data.billPrj=bp?bp.id:'';data.billPrjName=bp?bp.name:'';data.billCust=bc?bc.name:'';data.billCustId=bc?bc.id:'';data.billCustCode=bc?bc.code:'';
-    if(authOn()&&me&&!canAppr()){data.status='bekliyor';data.appUser=me.id;data.rejNote=''}else if(old){if(old.status)data.status=old.status;if(old.appUser)data.appUser=old.appUser;if(old.apprBy){data.apprBy=old.apprBy;data.apprAt=old.apprAt||''}}
+    if(authOn()&&me&&!canFinal()){data.status='bekliyor';data.appUser=(old&&old.appUser)||me.id;data.rejNote='';data.ldrBy='';data.ldrAt=''}else if(old){if(old.status)data.status=old.status;if(old.appUser)data.appUser=old.appUser;if(old.apprBy){data.apprBy=old.apprBy;data.apprAt=old.apprAt||''}}
     data.co=old?coOf(old):curCo;data.by=old?(old.by||''):myId();data.img=(old&&old.img)||'';data.imgKind=(old&&old.imgKind)||'';var hadF=!!xPend,up=await upDoc(xPend,m);if(up){data.img=up.id;data.imgKind=up.kind}
     if(old)await db.doc('expenses/'+old.id).set(data);else await db.collection('expenses').add(data);
     var keep=g('x_person');xClear();$('x_person').value=keep;$('x_msg').textContent=(data.status==='bekliyor'?'Masraf gönderildi ✓ Onay bekleniyor':'Masraf kaydedildi ✓')+' · '+pc.code+(pc.isNew?' (yeni personel kartı açıldı)':'')+(hadF?(up?' · fiş görseli saklandı':' · fiş görseli SAKLANAMADI'):'')}
@@ -2022,7 +2022,7 @@ function cashBy(){var by=Object.assign({},setRaw.cashBy||{});if(by.finale==null&
 function coApply(){var f=function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)===curCo)&&vis(x)};
   contracts=contractsAll.filter(f);ba=baAll.filter(f);bt=btAll.filter(f);kc=kcAll.filter(f);kt=ktAll.filter(f);loans=loansAll.filter(f);invs=invsAll.filter(f);recs=recsAll.filter(f);exps=expsAll.filter(f).filter(expOk);
   prjs=prjsAll.filter(function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)===curCo)});acts=actsAll.filter(f);
-  expsPend=expsAll.filter(f).filter(function(x){return x.status==='bekliyor'});expsRej=expsAll.filter(f).filter(function(x){return x.status==='red'});
+  var bekl=expsAll.filter(f).filter(function(x){return x.status==='bekliyor'||x.status==='lider'});expsPend=bekl.filter(xCanAct);expsWait=bekl.filter(function(x){return !xCanAct(x)});expsRej=expsAll.filter(f).filter(function(x){return x.status==='red'});
   var by=cashBy();cash={amt:curCo?(+by[curCo]||0):Object.keys(by).filter(coAllowed).reduce(function(s,k){return s+(+by[k]||0)},0)};
   if(document.activeElement!==$('cashIn'))$('cashIn').value=fc(cash.amt);$('cashIn').disabled=!curCo;
   render()}
@@ -2079,7 +2079,7 @@ function vCoCmp(){if(curCo||cos.filter(function(c){return coAllowed(c.id)}).leng
   return '<h2 style="margin-bottom:10px">Şirket karşılaştırması</h2><div class="tw" style="margin-bottom:18px"><table><tr><th>Şirket</th><th class="r">Açılış bakiyesi</th><th class="r">Açık alacak</th><th class="r">Açık fatura borcu</th><th class="r">Kalan kredi ödemesi</th><th class="r">'+TODAY.slice(0,4)+' gelir</th><th class="r">Vergi öncesi kâr</th><th class="r">Kâr marjı</th></tr>'+
     rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td>'+r.slice(1).map(cell).join('')+'</tr>'}).join('')+'<tr class="tot"><td>TOPLAM</td>'+T.map(cell).join('')+'</tr></table></div>'}
 /* ==== KULLANICILAR, ROLLER, GİRİŞ VE YETKİLER (uygulama içi; arayüz düzeyinde) ==== */
-var appusers=[], auLoaded=false, me=null, isOwn=false, expsPend=[], expsRej=[];
+var appusers=[], auLoaded=false, me=null, isOwn=false, expsPend=[], expsWait=[], expsRej=[];
 var ALLT={ozet:'Özet',nakit:'Nakit akışı',kz:'Kâr / zarar',gelen:'Gelen faturalar',giden:'Giden faturalar',gider:'Düzenli giderler',masraf:'Personel masrafları',cari:'Cariler',akt:'Aktiviteler',cv:'Özgeçmişler',soz:'Sözleşmeler',banka:'Banka',kk:'Kredi kartları',aylik:'Kredi taksitleri',krediler:'Krediler',proj:'Kredi kalan borç',yeni:'Yeni kredi',ayar:'Ayarlar'};
 var TK=Object.keys(ALLT);
 var SUPER={id:'*',name:'Yönetici',tabs:TK,scope:'all',approve:1,cos:'*'};
@@ -2087,6 +2087,16 @@ var DEFR=[{id:'yonetici',name:'Yönetici',tabs:TK,scope:'all',approve:1,cv:1,cos
 function roles(){var r=setRaw.roles;return (Array.isArray(r)&&r.length)?r:DEFR}
 function rname(id){var r=roles().filter(function(q){return q.id===id})[0];return r?r.name:'(rol silinmiş)'}
 function expOk(x){return !x.status||x.status==='onay'}
+/* Masraf onayı iki aşamalı: personel gönderir ('bekliyor') -> gönderenin ekip lideri onaylar ('lider') -> son onay ('onay').
+   Son onay: onay yetkisi olan ve herkesin kayıtlarını gören roller (ör. Muhasebe, Yönetici). Gönderenin ekip lideri yoksa
+   masraf doğrudan son onaya düşer. Herhangi bir aşamada reddedilebilir ('red'). */
+function auOf(id){return id?appusers.filter(function(u){return u.id===id&&u.active!==0})[0]||null:null}
+function xLead(x){var u=auOf(x.appUser);return u&&u.lead&&u.lead!==u.id?auOf(u.lead):null}
+function xStage(x){if(x.status==='bekliyor')return xLead(x)?'lider':'son';if(x.status==='lider')return 'son';return ''}
+function canFinal(){var R=myRole();return !!R&&!!R.approve&&R.scope!=='own'&&R.scope!=='team'}
+function iLead(x){var l=xLead(x);return !!me&&!!l&&l.id===me.id}
+function xCanAct(x){var st=xStage(x);return (st==='lider'&&iLead(x))||(st==='son'&&canFinal())}
+function xStTxt(x){var st=xStage(x),l=xLead(x);return st==='lider'?'Ekip lideri onayı bekliyor'+(l?' ('+l.name+')':''):st==='son'?'Muhasebe onayı bekliyor'+(x.ldrBy?' · lider onayladı: '+x.ldrBy:''):''}
 function authOn(){return appusers.some(function(u){return u.active!==0})}
 function myRole(){if(!auLoaded)return null;if(!authOn())return SUPER;if(!me)return null;if(me.id==='owner')return SUPER;return roles().filter(function(q){return q.id===me.role})[0]||null}
 function allowed(t){var R=myRole();if(!R)return false;if((t==='cv'||t==='soz'||t==='banka'||t==='kk'||t==='akt')&&(R.id==='*'||R.id==='yonetici'))return true;return Array.isArray(R.tabs)&&R.tabs.indexOf(t)>-1}
@@ -2182,8 +2192,8 @@ document.addEventListener('click',async function(e){var t=e.target,a=t.dataset&&
     var nl=roles().map(function(r){return r.id===ri?nr:r});if(authOn()&&!hasAdmin(appusers,nl)){msg.textContent='Bu değişiklikten sonra Ayarlar yetkisi olan etkin kullanıcı kalmıyor; kaydedilmedi.';return}
     await setSave({roles:nl},'Rol kaydedildi ✓');msg.textContent='"'+nr.name+'" rolü kaydedildi ✓';if(document.activeElement)document.activeElement.blur();auRender(true);return}
   if(a==='rldel'){if(!armed(t))return;await setSave({roles:roles().filter(function(r){return r.id!==t.dataset.id})},'Rol silindi');auRender(true);return}
-  if(a==='xappr'){t.disabled=true;db.doc('expenses/'+t.dataset.id).update({status:'onay',apprBy:me?me.name:'',apprAt:TODAY,rejNote:''}).then(function(){toast('Masraf onaylandı ✓')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()});return}
-  if(a==='xrej'){var note=$('rej_'+t.dataset.id).value.trim();if(!note){toast('Ret nedenini yazın');$('rej_'+t.dataset.id).focus();return}t.disabled=true;
+  if(a==='xappr'){var xa=expsAll.filter(function(y){return y.id===t.dataset.id})[0];if(!xa||!xCanAct(xa))return;t.disabled=true;var ld=xStage(xa)==='lider';db.doc('expenses/'+t.dataset.id).update(ld?{status:'lider',ldrBy:me?me.name:'',ldrAt:TODAY,rejNote:''}:{status:'onay',apprBy:me?me.name:'',apprAt:TODAY,rejNote:''}).then(function(){toast(ld?'Ekip lideri onayı verildi ✓ Muhasebe onayına gönderildi':'Masraf onaylandı ✓')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()});return}
+  if(a==='xrej'){var xr=expsAll.filter(function(y){return y.id===t.dataset.id})[0];if(!xr||!xCanAct(xr))return;var note=$('rej_'+t.dataset.id).value.trim();if(!note){toast('Ret nedenini yazın');$('rej_'+t.dataset.id).focus();return}t.disabled=true;
     db.doc('expenses/'+t.dataset.id).update({status:'red',rejNote:note.slice(0,200),apprBy:me?me.name:'',apprAt:TODAY}).then(function(){toast('Masraf reddedildi')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()});return}
 });
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='lg_pin')doLogin()});
@@ -2191,16 +2201,21 @@ document.addEventListener('change',async function(e){var t=e.target,id=t&&t.id||
   if(k!=='aue_'&&k!=='aul_')return;var u=appusers.filter(function(q){return q.id===uid})[0];if(!u)return;
   var up=k==='aue_'?{email:t.value.trim()}:{lead:t.value},m=$('au_msg');
   try{await db.doc('appusers/'+uid).update(up);m.textContent=(k==='aue_'?'E-posta':'Ekip lideri')+' kaydedildi ✓ ('+u.name+')'}catch(er){m.textContent='Kaydedilemedi: '+((er&&er.code)||er)}});
-function vPend(){if(!expsPend.length||!canAppr())return '';var L=expsPend.slice().sort(function(a,b){return a.date<b.date?-1:1});
-  return '<div class="alert"><h2>Onay bekleyen masraflar</h2><div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th class="r">KDV</th><th>Ret nedeni</th><th></th></tr>'+
-   L.map(function(x){return '<tr><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc(x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'Fişli'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td><input id="rej_'+esc(x.id)+'" aria-label="Ret nedeni" placeholder="Reddedecekseniz yazın" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;width:170px"></td><td>'+docBtn(x)+'<button class="btn small" data-act="xappr" data-id="'+esc(x.id)+'">Onayla</button> <button class="btn danger small" data-act="xrej" data-id="'+esc(x.id)+'">Reddet</button> <button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button></td></tr>'}).join('')+
-   '<tr class="tot"><td>TOPLAM</td><td>'+L.length+' masraf</td><td></td><td></td><td></td><td class="r">'+fm(isum(L))+'</td><td></td><td></td><td></td></tr></table></div></div>'}
+function vPend(){if(!expsPend.length&&!expsWait.length)return '';var h='';
+  if(expsPend.length){var L=expsPend.slice().sort(function(a,b){return a.date<b.date?-1:1});
+  h+='<div class="alert"><h2>Onayınızı bekleyen masraflar</h2><div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th class="r">KDV</th><th>Aşama</th><th>Ret nedeni</th><th></th></tr>'+
+   L.map(function(x){var ld=xStage(x)==='lider';return '<tr><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc(x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'Fişli'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td><span class="pill wait">'+(ld?'Ekip lideri onayı':'Son onay (muhasebe)')+'</span>'+(x.ldrBy?'<div class="msg">Lider onayladı: '+esc(x.ldrBy)+'</div>':'')+'</td><td><input id="rej_'+esc(x.id)+'" aria-label="Ret nedeni" placeholder="Reddedecekseniz yazın" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;width:170px"></td><td>'+docBtn(x)+'<button class="btn small" data-act="xappr" data-id="'+esc(x.id)+'">'+(ld?'Onayla, muhasebeye gönder':'Onayla')+'</button> <button class="btn danger small" data-act="xrej" data-id="'+esc(x.id)+'">Reddet</button> <button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button></td></tr>'}).join('')+
+   '<tr class="tot"><td>TOPLAM</td><td>'+L.length+' masraf</td><td></td><td></td><td></td><td class="r">'+fm(isum(L))+'</td><td></td><td></td><td></td><td></td></tr></table></div></div>'}
+  if(expsWait.length){var W=expsWait.slice().sort(function(a,b){return a.date<b.date?-1:1});
+    h+='<details class="loan" style="margin:12px 0"><summary style="display:block"><span class="nm">Başka onaycıda bekleyen masraflar ('+W.length+')</span> <span class="sub">· '+fm(isum(W))+'</span></summary><div class="body"><div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Açıklama</th><th class="r">Tutar</th><th>Durum</th></tr>'+
+      W.map(function(x){return '<tr><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc(x.person)+'</td><td>'+esc([x.cat,x.vendor,x.desc].filter(Boolean).join(' · '))+'</td><td class="r">'+fm(x.total)+'</td><td><span class="pill wait">'+esc(xStTxt(x))+'</span></td></tr>'}).join('')+'</table></div></div></details>'}
+  return h}
 function vMine(){if(!me)return '';var L=expsAll.filter(function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)===curCo)&&mine(x)}).sort(function(a,b){return a.date<b.date?1:-1});
-  var pe=L.filter(function(x){return x.status==='bekliyor'}),ok=L.filter(function(x){return expOk(x)&&!x.paid}),pd=L.filter(function(x){return x.paid});
+  var pe=L.filter(function(x){return x.status==='bekliyor'||x.status==='lider'}),ok=L.filter(function(x){return expOk(x)&&!x.paid}),pd=L.filter(function(x){return x.paid});
   var h='<div class="kpis"><div class="kpi"><div class="l">Onay bekleyen</div><div class="v">'+fm(isum(pe))+'</div><div class="n">'+pe.length+' masraf</div></div><div class="kpi"><div class="l">Onaylandı, ödenecek</div><div class="v" style="color:var(--good)">'+fm(isum(ok))+'</div><div class="n">'+ok.length+' masraf</div></div><div class="kpi"><div class="l">Ödenen</div><div class="v">'+fm(isum(pd))+'</div><div class="n">'+pd.length+' masraf</div></div></div>';
   if(!L.length)return h+'<div class="empty">Henüz masrafınız yok. Yukarıdan fişinizi ekleyip gönderin; muhasebe onayladıktan sonra ödeme sırasına girer.</div>';
   return h+'<h2>Masraflarım</h2><div class="tw"><table><tr><th>Tarih</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th>Durum</th><th>Ödeme tarihi</th><th></th></tr>'+L.map(function(x){var ed=x.status==='bekliyor'||x.status==='red';
-    var st=x.paid?'<span class="pill paid">Ödendi</span>':x.status==='bekliyor'?'<span class="pill wait">Onay bekliyor</span>':x.status==='red'?'<span class="pill late">Reddedildi</span> '+esc(x.rejNote||''):'<span class="pill paid">Onaylandı</span>';
+    var st=x.paid?'<span class="pill paid">Ödendi</span>':(x.status==='bekliyor'||x.status==='lider')?'<span class="pill wait">'+esc(xStTxt(x))+'</span>':x.status==='red'?'<span class="pill late">Reddedildi</span> '+esc(x.rejNote||''):'<span class="pill paid">Onaylandı</span>';
     return '<tr><td>'+fd(x.date)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'Fişli':'Fişsiz')+'</td><td class="r">'+fm(x.total)+'</td><td>'+st+'</td><td>'+(expOk(x)&&x.due?fd(x.due):'')+'</td><td>'+docBtn(x)+(ed?'<button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button> <button class="btn danger small" data-act="xdel" data-id="'+esc(x.id)+'">Sil</button>':'')+'</td></tr>'}).join('')+'</table></div>'}
 function auInit(){
   db.collection('appusers').onSnapshot(function(s){appusers=s.docs.map(function(d){var x=JSON.parse(JSON.stringify(d.data()||{}));x.id=d.id;return x}).filter(function(x){return x.name&&x.role}).sort(function(a,b){return (a.created||0)-(b.created||0)});auLoaded=true;
