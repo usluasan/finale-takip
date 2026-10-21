@@ -302,3 +302,30 @@ Personel masraflarında **masrafı müşteriye fatura etme** işareti. claude.ai
 - Docker imajı Chromium yüzünden ~1,4 GB.
 - CV başına yapay zekâ maliyeti oluşur; kullanım sınırı yok.
 
+---
+
+## v0.8.0 Meitner — 21 Ekim 2026
+
+**Personel masraflarında iki aşamalı onay.** claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Personel → ekip lideri ("Onayla, muhasebeye gönder") → muhasebe (son onay). Lideri olmayanın masrafı doğrudan muhasebeye gider.
+- Son onaycı: onay yetkisi olan ve herkesin kayıtlarını gören roller; ekip lideri yalnız kendi ekibini görür.
+- Her aşamada nedenli ret; personel masrafın aşamasını görür; onaycılar başka aşamada bekleyenleri bilgi olarak görür.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `1bff8a0` | C055 | İki aşamalı masraf onayı |
+| C056 commit'i (`git log --grep=C056`) | C056 | Sürüm v0.8.0 Meitner — **`v0.8.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi: test rolleriyle personel → lider → muhasebe akışı, lideri olmayan personel, görünürlük, ret.
+- Test edilmedi: canlı sunucudaki gerçek rol ayarları, lider aynı zamanda son onaycıysa.
+
+**Ayar gereği (Ayarlar > Kullanıcılar ve roller)**
+- Muhasebe rolü: onay yetkisi açık, "Herkesin kayıtları".
+- Ekip lideri rolü: "Kendi kayıtları + ekibindekilerin kayıtları"; onay yetkisi kapalı da olabilir.
+- Her personelin "Lider" alanına ekip lideri seçilmeli.
+

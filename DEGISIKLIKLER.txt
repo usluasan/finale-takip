@@ -249,3 +249,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - Ekip lideri olmayan personelin masrafi dogrudan muhasebeye gider.
   - Her asamada neden yazarak reddedilebilir; personel kendi ekraninda masrafin hangi asamada oldugunu gorur.
   - Muhasebe herkesin masrafini gorur; ekip lideri sadece kendi ekibininkini.
+
+[21 Ekim] Surum v0.8.0 Meitner
+  - Iki asamali masraf onayiyla surum v0.7.0'dan v0.8.0 Meitner'e cikti.
