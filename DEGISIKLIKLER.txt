@@ -256,3 +256,7 @@ Yeni degisiklikler EN ALTA eklenir.
 [21 Ekim] Duzeltme: ekibini goremeyen lider (v0.8.1)
   - Bir personelin lideri, rolu geregi ekibini goremiyorsa (ornegin rolu "Personel"), masraf o lidere takilmaz,
     dogrudan muhasebeye gider. Canlida ebayar boyle bir durumdaydi.
+
+[21 Ekim] Duzeltme: arka planda biriken PDF surecleri (v0.8.2)
+  - CV PDF'i her uretildiginde arka planda "olu" surecler kaliyordu; zamanla birikip sunucuyu yorardi.
+    Uygulama artik bunlari temizleyen bir yardimciyla calisiyor.

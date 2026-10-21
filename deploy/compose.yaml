@@ -8,6 +8,7 @@ services:
       context: ..                    # repo kökü (bu dosya deploy/ altında)
     image: finale-takip:${FINALE_SURUM:?FINALE_SURUM tanımlı değil, örn. v0.4.1}
     restart: unless-stopped
+    init: true                       # PDF üretiminde açılan Chromium alt süreçleri temizlensin (zombi süreç birikmesin)
     env_file:
       - ${FINALE_ENV_DOSYASI:-/opt/docker/finale/finale-takip.env}   # APP_KEY, ADMIN_KEY...; chmod 600, repoda YOK
     volumes:
