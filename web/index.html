@@ -256,6 +256,8 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
         <label>KDV<input id="x_vat" inputmode="decimal" placeholder="0,00"></label>
         <label>Personele ödeme tarihi (boşsa personel kartındaki vade, o da yoksa masraf tarihi)<input id="x_due" type="date"></label>
         <label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px"><input type="checkbox" id="x_rc" class="chk" checked> Fişi / belgesi var</label>
+        <label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px"><input type="checkbox" id="x_bill" class="chk"> Müşteriye fatura edilecek</label>
+        <label id="x_prjw" hidden>Proje (müşteri projeden gelir)<select id="x_prj"></select><span class="msg" id="x_cust"></span></label>
       </div>
       <datalist id="x_plist"></datalist>
       <div class="row"><button class="btn" data-act="xsave">Masrafı kaydet</button><button class="btn ghost" data-act="xclear">Temizle</button><span class="msg" id="x_msg"></span></div>
@@ -776,7 +778,7 @@ function doExport(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cd),'CARİLER');
   var rd=[['GİDER','KATEGORİ','TUTAR','SIKLIK (AY)','ÖDEME GÜNÜ','BAŞLANGIÇ','BİTİŞ']];recs.forEach(function(r){rd.push([r.name,r.cat||'',r.amount,r.freq||1,r.day,r.start||'',r.end||''])});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rd),'DÜZENLİ GİDERLER');
-  var xd=[['TARİH','PERSONEL KODU','PERSONEL','KATEGORİ','AÇIKLAMA','İŞLETME','FİŞ NO','FİŞ','TUTAR','KDV','ÖDEME TARİHİ','DURUM']];exps.slice().sort(function(a,b){return a.date<b.date?-1:1}).forEach(function(x){xd.push([fd(x.date),x.partyCode||'',x.person||'',x.cat||'',x.desc||'',x.vendor||'',x.no||'',x.receipt?'FİŞLİ':'FİŞSİZ',x.total||0,x.vat||0,x.due?fd(x.due):'',x.paid?'ÖDENDİ':''])});
+  var xd=[['TARİH','PERSONEL KODU','PERSONEL','KATEGORİ','AÇIKLAMA','İŞLETME','FİŞ NO','FİŞ','TUTAR','KDV','ÖDEME TARİHİ','DURUM','FATURA EDİLECEK','FATURA MÜŞTERİSİ','PROJE']];exps.slice().sort(function(a,b){return a.date<b.date?-1:1}).forEach(function(x){xd.push([fd(x.date),x.partyCode||'',x.person||'',x.cat||'',x.desc||'',x.vendor||'',x.no||'',x.receipt?'FİŞLİ':'FİŞSİZ',x.total||0,x.vat||0,x.due?fd(x.due):'',x.paid?'ÖDENDİ':'',x.bill?'EVET':'',x.bill?(x.billCust||''):'',x.bill?(x.billPrjName||''):''])});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(xd),'PERSONEL MASRAFLARI');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(akSheet(acts.slice().sort(function(a,b){return a.date<b.date?-1:1}))),'AKTİVİTELER');
   var pr=[['KALEM'].concat(AY).concat(['BUGÜNE KADAR'])];plRows(+TODAY.slice(0,4)).R.forEach(function(r){if(r.h)pr.push([r.h]);else if(r.v)pr.push([r.l].concat(r.v.map(function(v){return +v.toFixed(2)})).concat([+sL(r.v,+TODAY.slice(0,4)).toFixed(2)]));else if(r.tot!=null)pr.push([r.l,'','','','','','','','','','','','',+r.tot.toFixed(2)])});
@@ -1501,8 +1503,16 @@ document.addEventListener('change',function(e){var t=e.target;if(!t.classList||!
   db.doc('recurring/'+t.dataset.id).update({paid:pd}).then(function(){toast('Kaydedildi ✓')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()})});
 /* ==== PERSONEL MASRAFLARI ==== */
 var exps=[], expLoaded=false, xEdit=null, xPend=null, xsaving=false;
+/* Masrafın müşteriye fatura edilmesi: proje seçilir, fatura müşterisi projeden gelir (projede ayrı fatura müşterisi varsa o) */
+function xPrjCust(p){return p?(p.fparty?{name:p.fparty,id:p.fpartyId||'',code:p.fpartyCode||''}:{name:p.party||'',id:p.partyId||'',code:p.partyCode||''}):null}
+function xPrjFill(){var e=$('x_prj');if(!e)return;var cur=e.value,L=prjs.filter(function(p){return p.status!=='kapali'||p.id===cur}).sort(function(a,b){return prjLabel(a)<prjLabel(b)?-1:1});
+  var h='<option value="">— Proje seçin —</option>'+L.map(function(p){return '<option value="'+esc(p.id)+'">'+esc((p.code?p.code+' · ':'')+prjLabel(p))+'</option>'}).join('');
+  if(e.dataset.h!==h){e.innerHTML=h;e.dataset.h=h;e.value=cur}xBillSync()}
+function xBillSync(){var on=$('x_bill').checked;$('x_prjw').hidden=!on;var p=on?prjOf($('x_prj').value):null,c=xPrjCust(p);
+  $('x_cust').textContent=on?(c&&c.name?'Fatura müşterisi: '+c.name:(prjs.length?'Projeyi seçin; müşteri projeden gelir.':'Henüz proje yok; Aktiviteler > Projeler bölümünden ekleyin.')):''}
+function xBillTag(x){return x.bill?' <span class="pill wait" title="Müşteriye fatura edilecek">Fatura: '+esc(x.billCust||'—')+(x.billPrjName?' · '+esc(x.billPrjName):'')+'</span>':''}
 var XF=['x_person','x_date','x_desc','x_vendor','x_no','x_total','x_vat','x_due'];
-function xClear(){xEdit=null;xPend=null;xMulti=null;XF.forEach(function(k){$(k).value=''});$('x_date').value=TODAY;$('x_cat').selectedIndex=0;$('x_rc').checked=true;$('x_read').disabled=true;$('x_msg').textContent='';$('x_imsg').textContent='Fiş görseli seçin veya ekran görüntüsünü bu sekmede yapıştırın (Ctrl+V). Görselde birden fazla fiş olabilir. Fişsiz gider için görsel gerekmez. Seçtiğiniz görsel kayıtla birlikte saklanır.'}
+function xClear(){xEdit=null;xPend=null;xMulti=null;XF.forEach(function(k){$(k).value=''});$('x_date').value=TODAY;$('x_cat').selectedIndex=0;$('x_rc').checked=true;$('x_bill').checked=false;$('x_prj').value='';xBillSync();$('x_read').disabled=true;$('x_msg').textContent='';$('x_imsg').textContent='Fiş görseli seçin veya ekran görüntüsünü bu sekmede yapıştırın (Ctrl+V). Görselde birden fazla fiş olabilir. Fişsiz gider için görsel gerekmez. Seçtiğiniz görsel kayıtla birlikte saklanır.'}
 function xSetPend(f){xPend=f;$('x_read').disabled=false;$('x_rc').checked=true;$('x_imsg').textContent='Görsel hazır'+(f.name?' ('+f.name+')':'')+'. "Fişi oku"ya basın.'}
 var xMulti=null;
 function xMultiFill(){if(!xMulti)return;var per=$('x_person').value.trim();
@@ -1542,9 +1552,11 @@ async function xSave(){if(xsaving)return;var m=$('x_msg'),g=function(k){return $
   if(!g('x_person')){m.textContent='Personeli seçin veya adını yazın.';return}
   if(!/^\d{4}-\d{2}-\d{2}$/.test(g('x_date'))){m.textContent='Masraf tarihini girin.';return}
   if(!(tot>0)){m.textContent='Tutarı girin.';return}
+  var bp=$('x_bill').checked?prjOf($('x_prj').value):null;if($('x_bill').checked&&!bp){m.textContent='Fatura edilecek masraf için projeyi seçin.';return}
   var old=xEdit?expsAll.filter(function(x){return x.id===xEdit})[0]:null;xsaving=true;m.textContent='Kaydediliyor…';
   try{var pc=await ensurePartyRole('P',g('x_person'),''),pcard=parties.filter(function(q){return q.id===pc.id})[0];
     var data={partyId:pc.id,partyCode:pc.code,person:g('x_person'),date:g('x_date'),cat:$('x_cat').value,desc:g('x_desc'),vendor:g('x_vendor'),no:g('x_no'),total:Math.round(tot*100)/100,vat:isNaN(vat)?0:Math.round(vat*100)/100,receipt:$('x_rc').checked?1:0,due:g('x_due')||(hasTerm(pcard)?dueFor(pcard,g('x_date')):g('x_date')),paid:old?(old.paid?1:0):0,paidDate:old&&old.paidDate||'',created:old&&old.created||Date.now()};
+    var bc=xPrjCust(bp);data.bill=bp?1:0;data.billPrj=bp?bp.id:'';data.billPrjName=bp?bp.name:'';data.billCust=bc?bc.name:'';data.billCustId=bc?bc.id:'';data.billCustCode=bc?bc.code:'';
     if(authOn()&&me&&!canAppr()){data.status='bekliyor';data.appUser=me.id;data.rejNote=''}else if(old){if(old.status)data.status=old.status;if(old.appUser)data.appUser=old.appUser;if(old.apprBy){data.apprBy=old.apprBy;data.apprAt=old.apprAt||''}}
     data.co=old?coOf(old):curCo;data.by=old?(old.by||''):myId();data.img=(old&&old.img)||'';data.imgKind=(old&&old.imgKind)||'';var hadF=!!xPend,up=await upDoc(xPend,m);if(up){data.img=up.id;data.imgKind=up.kind}
     if(old)await db.doc('expenses/'+old.id).set(data);else await db.collection('expenses').add(data);
@@ -1552,6 +1564,7 @@ async function xSave(){if(xsaving)return;var m=$('x_msg'),g=function(k){return $
   catch(e){m.textContent='KAYDEDİLEMEDİ: '+((e&&e.code)||'')+' '+((e&&e.message)||'')}
   xsaving=false}
 function vExp(){
+  xPrjFill();
   if(!expLoaded)return '<div class="empty">Yükleniyor…</div>';
   if(ownScope())return vMine();
   var P=parties.filter(function(p){return p.role==='P'}).sort(function(a,b){return a.code<b.code?-1:1});
@@ -1574,20 +1587,21 @@ function vExp(){
   var bc={};L.forEach(function(x){bc[x.cat||'Diğer']=(bc[x.cat||'Diğer']||0)+(+x.total||0)});
   h+='<h2>Masraf kayıtları'+(fm2?' · '+mname(fm2):'')+'</h2>'+(L.length?'<p class="msg" style="margin:0">Kategoriye göre: '+Object.keys(bc).sort(function(a,b){return bc[b]-bc[a]}).map(function(k){return esc(k)+' '+fm(bc[k])}).join(' · ')+'</p>':'')+
    '<div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th class="r">KDV</th><th>Ödeme tarihi</th><th>Personele ödendi</th><th></th></tr>'+
-   (L.length?L.map(function(x){return '<tr class="'+(x.paid?'paid':'')+'"><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc((x.partyCode?x.partyCode+' ':'')+x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+'</td><td>'+(x.receipt?'<span class="pill paid">Fişli</span>'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td>'+(x.due?fd(x.due):'')+'</td><td><input type="checkbox" class="chk xchk" data-id="'+esc(x.id)+'"'+(x.paid?' checked':'')+' aria-label="'+esc(x.person)+' '+fd(x.date)+' ödendi"></td><td>'+docBtn(x)+'<button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button> <button class="btn danger small" data-act="xdel" data-id="'+esc(x.id)+'">Sil</button></td></tr>'}).join('')+
+   (L.length?L.map(function(x){return '<tr class="'+(x.paid?'paid':'')+'"><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc((x.partyCode?x.partyCode+' ':'')+x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'<span class="pill paid">Fişli</span>'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td>'+(x.due?fd(x.due):'')+'</td><td><input type="checkbox" class="chk xchk" data-id="'+esc(x.id)+'"'+(x.paid?' checked':'')+' aria-label="'+esc(x.person)+' '+fd(x.date)+' ödendi"></td><td>'+docBtn(x)+'<button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button> <button class="btn danger small" data-act="xdel" data-id="'+esc(x.id)+'">Sil</button></td></tr>'}).join('')+
      '<tr class="tot"><td>TOPLAM</td><td>'+L.length+' kayıt</td><td></td><td></td><td></td><td class="r">'+fm(isum(L))+'</td><td class="r">'+fm(L.reduce(function(s,x){return s+(+x.vat||0)},0))+'</td><td></td><td></td><td></td></tr>':'<tr><td colspan="10" class="msg">Bu seçimde masraf yok.</td></tr>')+'</table></div>';
   return h}
 document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.dataset.act;if(!a)return;
   if(a==='xsave'){xSave();return}
   if(a==='xclear'){xClear();return}
   if(a==='xread'){xRead();return}
-  if(a==='xedit'){var x=expsAll.filter(function(y){return y.id===t.dataset.id})[0];if(!x)return;xClear();xEdit=x.id;$('x_person').value=x.person||'';$('x_date').value=x.date||'';setSel('x_cat',x.cat||lst('exp')[0]);$('x_desc').value=x.desc||'';$('x_vendor').value=x.vendor||'';$('x_no').value=x.no||'';$('x_total').value=fc(x.total);$('x_vat').value=x.vat?fc(x.vat):'';$('x_due').value=x.due||'';$('x_rc').checked=!!x.receipt;$('x_msg').textContent='Düzenleniyor: '+x.person+' '+fd(x.date);$('x_form').scrollIntoView({block:'start'});return}
+  if(a==='xedit'){var x=expsAll.filter(function(y){return y.id===t.dataset.id})[0];if(!x)return;xClear();xEdit=x.id;$('x_person').value=x.person||'';$('x_date').value=x.date||'';setSel('x_cat',x.cat||lst('exp')[0]);$('x_desc').value=x.desc||'';$('x_vendor').value=x.vendor||'';$('x_no').value=x.no||'';$('x_total').value=fc(x.total);$('x_vat').value=x.vat?fc(x.vat):'';$('x_due').value=x.due||'';$('x_rc').checked=!!x.receipt;$('x_bill').checked=!!x.bill;xPrjFill();$('x_prj').value=x.billPrj||'';xBillSync();$('x_msg').textContent='Düzenleniyor: '+x.person+' '+fd(x.date);$('x_form').scrollIntoView({block:'start'});return}
   if(a==='xdel'){if(!armed(t))return;
     db.doc('expenses/'+t.dataset.id).delete().then(function(){toast('Masraf silindi')}).catch(function(er){toast('Silinemedi: '+((er&&er.code)||er))});return}
 });
 document.addEventListener('change',function(e){var t=e.target;
   if(t.id==='x_img'){if(t.files&&t.files[0])xSetPend(t.files[0]);t.value='';return}
   if(t.id==='x_fm'||t.id==='x_fp'){render();return}
+  if(t.id==='x_bill'||t.id==='x_prj'){if(t.id==='x_bill')xPrjFill();xBillSync();return}
   if(t.id==='x_person'&&xMulti){xMultiFill();return}
   if(t.classList&&t.classList.contains('xchk')){t.disabled=true;db.doc('expenses/'+t.dataset.id).update({paid:t.checked?1:0,paidDate:t.checked?TODAY:''}).then(function(){toast('Kaydedildi ✓')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()})}});
 document.addEventListener('paste',function(e){if(tab!=='masraf'||!e.clipboardData)return;var its=e.clipboardData.items||[];for(var i=0;i<its.length;i++){if(its[i].kind==='file'&&/^image\//.test(its[i].type)){var f=its[i].getAsFile();if(f){e.preventDefault();xSetPend(f);return}}}});
@@ -2119,7 +2133,7 @@ document.addEventListener('change',async function(e){var t=e.target,id=t&&t.id||
   try{await db.doc('appusers/'+uid).update(up);m.textContent=(k==='aue_'?'E-posta':'Ekip lideri')+' kaydedildi ✓ ('+u.name+')'}catch(er){m.textContent='Kaydedilemedi: '+((er&&er.code)||er)}});
 function vPend(){if(!expsPend.length||!canAppr())return '';var L=expsPend.slice().sort(function(a,b){return a.date<b.date?-1:1});
   return '<div class="alert"><h2>Onay bekleyen masraflar</h2><div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th class="r">KDV</th><th>Ret nedeni</th><th></th></tr>'+
-   L.map(function(x){return '<tr><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc(x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+'</td><td>'+(x.receipt?'Fişli'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td><input id="rej_'+esc(x.id)+'" aria-label="Ret nedeni" placeholder="Reddedecekseniz yazın" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;width:170px"></td><td>'+docBtn(x)+'<button class="btn small" data-act="xappr" data-id="'+esc(x.id)+'">Onayla</button> <button class="btn danger small" data-act="xrej" data-id="'+esc(x.id)+'">Reddet</button> <button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button></td></tr>'}).join('')+
+   L.map(function(x){return '<tr><td>'+fd(x.date)+'</td><td>'+coTag(x)+esc(x.person)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'Fişli'+(x.no?' '+esc(x.no):''):'<span class="pill late">Fişsiz</span>')+'</td><td class="r">'+fm(x.total)+'</td><td class="r">'+(x.vat?fm(x.vat):'')+'</td><td><input id="rej_'+esc(x.id)+'" aria-label="Ret nedeni" placeholder="Reddedecekseniz yazın" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;width:170px"></td><td>'+docBtn(x)+'<button class="btn small" data-act="xappr" data-id="'+esc(x.id)+'">Onayla</button> <button class="btn danger small" data-act="xrej" data-id="'+esc(x.id)+'">Reddet</button> <button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button></td></tr>'}).join('')+
    '<tr class="tot"><td>TOPLAM</td><td>'+L.length+' masraf</td><td></td><td></td><td></td><td class="r">'+fm(isum(L))+'</td><td></td><td></td><td></td></tr></table></div></div>'}
 function vMine(){if(!me)return '';var L=expsAll.filter(function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)===curCo)&&mine(x)}).sort(function(a,b){return a.date<b.date?1:-1});
   var pe=L.filter(function(x){return x.status==='bekliyor'}),ok=L.filter(function(x){return expOk(x)&&!x.paid}),pd=L.filter(function(x){return x.paid});
@@ -2127,7 +2141,7 @@ function vMine(){if(!me)return '';var L=expsAll.filter(function(x){return coAllo
   if(!L.length)return h+'<div class="empty">Henüz masrafınız yok. Yukarıdan fişinizi ekleyip gönderin; muhasebe onayladıktan sonra ödeme sırasına girer.</div>';
   return h+'<h2>Masraflarım</h2><div class="tw"><table><tr><th>Tarih</th><th>Kategori</th><th>Açıklama</th><th>Fiş</th><th class="r">Tutar</th><th>Durum</th><th>Ödeme tarihi</th><th></th></tr>'+L.map(function(x){var ed=x.status==='bekliyor'||x.status==='red';
     var st=x.paid?'<span class="pill paid">Ödendi</span>':x.status==='bekliyor'?'<span class="pill wait">Onay bekliyor</span>':x.status==='red'?'<span class="pill late">Reddedildi</span> '+esc(x.rejNote||''):'<span class="pill paid">Onaylandı</span>';
-    return '<tr><td>'+fd(x.date)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+'</td><td>'+(x.receipt?'Fişli':'Fişsiz')+'</td><td class="r">'+fm(x.total)+'</td><td>'+st+'</td><td>'+(expOk(x)&&x.due?fd(x.due):'')+'</td><td>'+docBtn(x)+(ed?'<button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button> <button class="btn danger small" data-act="xdel" data-id="'+esc(x.id)+'">Sil</button>':'')+'</td></tr>'}).join('')+'</table></div>'}
+    return '<tr><td>'+fd(x.date)+'</td><td>'+esc(x.cat)+'</td><td>'+esc([x.vendor,x.desc].filter(Boolean).join(' · '))+xBillTag(x)+'</td><td>'+(x.receipt?'Fişli':'Fişsiz')+'</td><td class="r">'+fm(x.total)+'</td><td>'+st+'</td><td>'+(expOk(x)&&x.due?fd(x.due):'')+'</td><td>'+docBtn(x)+(ed?'<button class="btn ghost small" data-act="xedit" data-id="'+esc(x.id)+'">Düzenle</button> <button class="btn danger small" data-act="xdel" data-id="'+esc(x.id)+'">Sil</button>':'')+'</td></tr>'}).join('')+'</table></div>'}
 function auInit(){
   db.collection('appusers').onSnapshot(function(s){appusers=s.docs.map(function(d){var x=JSON.parse(JSON.stringify(d.data()||{}));x.id=d.id;return x}).filter(function(x){return x.name&&x.role}).sort(function(a,b){return (a.created||0)-(b.created||0)});auLoaded=true;
     if(me&&me.id!=='owner'){var cur=appusers.filter(function(u){return u.id===me.id&&u.active!==0})[0];me=cur||null}
