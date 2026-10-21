@@ -342,3 +342,14 @@ Düzeltme (v0.8.0 canlıya alınmadan): ekibini göremeyen bir roldeki lider (ö
 
 - Test edildi: canlıdaki rol yapısının taklidi. Test edilmedi: canlı sunucu (kurulum bu sürümle).
 
+---
+
+## v0.8.2 Meitner — 21 Ekim 2026
+
+Düzeltme: konteyner `init: true` ile çalışır; CV PDF üretiminde açılan Chromium alt süreçleri temizlenir (canlıda zombi süreç birikmesi görülmüştü). İmaj içeriği v0.8.1 ile aynı.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `23413ef` | C059 | Zombi süreç düzeltmesi |
+| C060 commit'i (`git log --grep=C060`) | C060 | Sürüm v0.8.2 — **`v0.8.2` etiketi bu commit üzerinde** |
+
