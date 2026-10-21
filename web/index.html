@@ -2091,7 +2091,9 @@ function expOk(x){return !x.status||x.status==='onay'}
    Son onay: onay yetkisi olan ve herkesin kayıtlarını gören roller (ör. Muhasebe, Yönetici). Gönderenin ekip lideri yoksa
    masraf doğrudan son onaya düşer. Herhangi bir aşamada reddedilebilir ('red'). */
 function auOf(id){return id?appusers.filter(function(u){return u.id===id&&u.active!==0})[0]||null:null}
-function xLead(x){var u=auOf(x.appUser);return u&&u.lead&&u.lead!==u.id?auOf(u.lead):null}
+function xLead(x){var u=auOf(x.appUser),l=u&&u.lead&&u.lead!==u.id?auOf(u.lead):null;if(!l)return null;
+  // Lider ekibini göremeyen bir roldeyse (yalnız kendi kayıtları ya da masraf sekmesi yok) masraf onda takılmasın, doğrudan son onaya gitsin
+  var r=roles().filter(function(q){return q.id===l.role})[0];if(!r||r.scope==='own')return null;if(!(r.id==='*'||r.id==='yonetici'||(Array.isArray(r.tabs)&&r.tabs.indexOf('masraf')>-1)))return null;return l}
 function xStage(x){if(x.status==='bekliyor')return xLead(x)?'lider':'son';if(x.status==='lider')return 'son';return ''}
 function canFinal(){var R=myRole();return !!R&&!!R.approve&&R.scope!=='own'&&R.scope!=='team'}
 function iLead(x){var l=xLead(x);return !!me&&!!l&&l.id===me.id}
