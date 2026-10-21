@@ -329,3 +329,16 @@ Personel masraflarında **masrafı müşteriye fatura etme** işareti. claude.ai
 - Ekip lideri rolü: "Kendi kayıtları + ekibindekilerin kayıtları"; onay yetkisi kapalı da olabilir.
 - Her personelin "Lider" alanına ekip lideri seçilmeli.
 
+---
+
+## v0.8.1 Meitner — 21 Ekim 2026
+
+Düzeltme (v0.8.0 canlıya alınmadan): ekibini göremeyen bir roldeki lider (ör. rolü "Personel") masraf onayını tıkamaz; masraf doğrudan muhasebeye gider.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `090231d` | C057 | Ekibini göremeyen lider |
+| C058 commit'i (`git log --grep=C058`) | C058 | Sürüm v0.8.1 — **`v0.8.1` etiketi bu commit üzerinde** |
+
+- Test edildi: canlıdaki rol yapısının taklidi. Test edilmedi: canlı sunucu (kurulum bu sürümle).
+
