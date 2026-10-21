@@ -220,3 +220,8 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [21 Ekim] Surum v0.6.0 Lovelace
   - Masrafi musteriye fatura etme ozelligiyle surum v0.5.0'dan v0.6.0 Lovelace'a cikti.
+
+[21 Ekim] v0.6.0 canlida
+  - Masrafi musteriye fatura etme ozelligi https://apps.finale.com.tr/finale/ adresinde. Oncesinde veri yedegi alindi.
+  - Kullanicilarin oturumlari kapanmadi.
+  - Dikkat: sistemde henuz hic proje yok; kutuyu kullanmak icin once Aktiviteler > Projeler bolumunden proje ekleyin.
