@@ -330,3 +330,11 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] v0.11.2 canlida
   - Masraf listesi ve filtre duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
+
+[2 Kasim] Masraf ekrani duzenlendi
+  - Onay bekleyen masraflar, hangi ay secili olursa olsun alttaki kayit listesinde gorunur.
+  - Tablolar ekrana sigacak sekilde sikisti; Onayla ve Reddet dugmeleri saga kaydirmadan gorunur.
+  - Uygulama genis ekranda daha genis acilir (tum sayfalar).
+
+[2 Kasim] Surum v0.11.3 Bohr
+  - Bu duzenlemeyle surum v0.11.3 oldu.
