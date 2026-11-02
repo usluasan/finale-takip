@@ -285,3 +285,11 @@ Yeni degisiklikler EN ALTA eklenir.
 [2 Kasim] Duzeltme: Excel'e aktar
   - Kendi sunucumuzdaki uygulamada Excel'e aktar dugmeleri dosya uretmiyordu (ilk surumden beri).
     Duzeltildi: genel Excel raporu ve aktivite raporlari artik iniyor.
+
+[2 Kasim] Aktivite raporunda coklu secim
+  - Aktiviteler'de birden fazla danisman ve birden fazla proje secebilirsin; arama kutusu ve "Secimi temizle" var.
+  - Liste, Excel ve onay bekleyenler listesi ayni secime gore gelir.
+  - Onay bekleyenler listesinin kendi Excel dugmesi var. "Listelenenleri onayla" yalniz filtreye uyanlari onaylar.
+
+[2 Kasim] Surum v0.10.0 Franklin
+  - Coklu secimli aktivite raporu ve Excel duzeltmesiyle surum v0.9.0'dan v0.10.0 Franklin'e cikti.
