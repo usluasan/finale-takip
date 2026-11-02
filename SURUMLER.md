@@ -399,3 +399,16 @@ Aktivite raporunda çoklu seçim; Excel'e aktar düzeltmesi. claude.ai artifact'
 **Test durumu**
 - Test edildi: 18 test aktivitesiyle filtreler, toplu onay, Excel içerikleri. Test edilmedi: gerçek veri, telefon görünümü.
 
+---
+
+## v0.11.0 Bohr — 2 Kasım 2026
+
+Açılışta rolüne göre kutulu **Ana sayfa**. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `b2b51aa` | C070 | Ana sayfa |
+| C071 commit'i (`git log --grep=C071`) | C071 | Sürüm v0.11.0 Bohr — **`v0.11.0` etiketi bu commit üzerinde** |
+
+- Test edildi: üç rolle kutular, geçişler, telefon genişliği. Test edilmedi: gerçek veri, açık tema.
+
