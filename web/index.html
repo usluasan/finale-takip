@@ -168,6 +168,12 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
 .msec{position:relative}.msec>summary{list-style:none;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 28px 7px 10px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}.msec>summary::-webkit-details-marker{display:none}.msec>summary::after{content:'▾';position:absolute;right:9px;top:7px;color:var(--muted)}.msec[data-on]>summary{border-color:var(--accent);font-weight:600}
 .msec-k{position:absolute;z-index:30;top:calc(100% + 4px);left:0;width:min(86vw,340px);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}.msec-a{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px}.msec-l{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:2px}.msec-l label{display:flex;gap:8px;align-items:center;padding:4px 2px;font-size:13px;cursor:pointer;color:var(--ink)}
+.ana-h{display:flex;flex-direction:column;gap:2px;margin:4px 0 14px}.ana-h b{font:700 22px var(--f-display);color:var(--ink)}
+.ana-g{margin-bottom:18px}.ana-g h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.ana-k{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ana-b{display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:96px;font:600 14px var(--f-body);text-align:left;cursor:pointer;transition:transform .12s,border-color .12s}
+.ana-b:hover,.ana-b:focus-visible{border-color:var(--gc);transform:translateY(-2px)}
+.ana-i{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;font-size:21px;background:color-mix(in srgb,var(--gc) 26%,transparent)}
 </style>
 </head>
 <body>
@@ -186,8 +192,9 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
   </header>
   <nav role="tablist" id="tabs">
     <div class="nbrand"><span>F</span><div><b>Finale</b><small>Yönetim paneli</small></div></div>
+    <button role="tab" data-ic="🧭" data-t="ana" aria-selected="true">Ana sayfa</button>
     <div class="ng">Genel</div>
-    <button role="tab" data-ic="🏠" data-t="ozet" aria-selected="true">Özet</button>
+    <button role="tab" data-ic="🏠" data-t="ozet" aria-selected="false">Özet</button>
     <button role="tab" data-ic="💸" data-t="nakit" aria-selected="false">Nakit akışı</button>
     <button role="tab" data-ic="📈" data-t="kz" aria-selected="false">Kâr / zarar</button>
     <div class="ng">Fatura &amp; gider</div>
@@ -212,7 +219,8 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
     <button role="tab" data-ic="⚙️" data-t="ayar" aria-selected="false">Ayarlar</button>
   </nav>
 
-  <section id="s-ozet"></section>
+  <section id="s-ana"><div id="anaL"></div></section>
+  <section id="s-ozet" hidden></section>
   <section id="s-nakit" hidden>
     <div class="row sp" style="margin-bottom:12px">
       <div class="row"><label class="msg" for="cashIn">Açılış bakiyesi (bugünkü kasa + banka, TL)</label><input id="cashIn" inputmode="decimal" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:170px;text-align:right;font-family:var(--f-num)" value="0,00"><button class="btn small" data-act="cashsave">Kaydet</button></div>
@@ -527,7 +535,7 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
 
 <script>
 (function(){
-var lastSnap=null, loans=[], db=null, tab='ozet', month=null, bankF='', dl=null, loaded=false;
+var lastSnap=null, loans=[], db=null, tab='ana', month=null, bankF='', dl=null, loaded=false;
 var DOC='loans';
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -670,14 +678,22 @@ function vProj(){
   if(late.length)h+='<p class="msg">Önceki aylara ait '+late.length+' işaretsiz taksit bu tabloya dahil değildir.</p>';
   return h;
 }
+/* Ana sayfa: kutular sol menüden üretilir; rolün göremediği sekme menüde gizli olduğu için burada da çıkmaz */
+function vAna(){var h='',grp='',kart='',bit=function(){if(kart)h+='<div class="ana-g">'+(grp?'<h2>'+esc(grp)+'</h2>':'')+'<div class="ana-k">'+kart+'</div></div>';kart=''};
+  Array.prototype.forEach.call($('tabs').children,function(n){if(n.classList.contains('ng')){bit();grp=n.textContent;return}
+    if(n.tagName!=='BUTTON'||n.hidden||n.dataset.t==='ana')return;var gc=getComputedStyle(n).getPropertyValue('--gc').trim()||'var(--accent)';
+    kart+='<button class="ana-b" data-git="'+esc(n.dataset.t)+'" style="--gc:'+esc(gc)+'"><span class="ana-i" aria-hidden="true">'+esc(n.dataset.ic||'')+'</span><span>'+esc(n.textContent)+'</span></button>'});
+  bit();if(!h)return '';
+  return '<div class="ana-h"><b>Hoş geldiniz'+(me&&me.id!=='owner'?', '+esc(me.name):'')+'</b><span class="msg">Gitmek istediğiniz bölümü seçin.</span></div>'+h}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-git]');if(!b)return;tab=b.dataset.git;render();window.scrollTo(0,0)});
 function render(){
   $('s-ozet').innerHTML=vSozUy()+vKkUy()+vAktUy()+vCoCmp()+vKpi()+vGenel()+vOzet();
   invRender();cariRender();$('cvL').innerHTML=vCv();$('szL').innerHTML=vSoz();szLists();bnRender();$('recL').innerHTML=vRec();$('expL').innerHTML=vExp();akLists();akWeekRender();$('aktL').innerHTML=vAkt();$('pjL').innerHTML=vPrj();$('plBody').innerHTML=vPL();
   $('s-aylik').innerHTML=vAylik();
   $('s-krediler').innerHTML=vKrediler();
   $('s-proj').innerHTML=vProj();
-  gate();
-  ['ozet','nakit','kz','gelen','giden','gider','masraf','cari','akt','cv','soz','banka','kk','aylik','krediler','proj','yeni','ayar'].forEach(function(t){$('s-'+t).hidden=(t!==tab)});
+  gate();$('anaL').innerHTML=vAna();
+  ['ana','ozet','nakit','kz','gelen','giden','gider','masraf','cari','akt','cv','soz','banka','kk','aylik','krediler','proj','yeni','ayar'].forEach(function(t){$('s-'+t).hidden=(t!==tab)});
   barRender();armShow();
   Array.prototype.forEach.call(document.querySelectorAll('#tabs button'),function(b){b.setAttribute('aria-selected',b.dataset.t===tab);if(b.dataset.t===tab)$('mtitle').textContent=b.textContent});document.body.classList.remove('mnav');
 }
@@ -2123,7 +2139,7 @@ function xCanAct(x){var st=xStage(x);return (st==='lider'&&iLead(x))||(st==='son
 function xStTxt(x){var st=xStage(x),l=xLead(x);return st==='lider'?'Ekip lideri onayı bekliyor'+(l?' ('+l.name+')':''):st==='son'?'Muhasebe onayı bekliyor'+(x.ldrBy?' · lider onayladı: '+x.ldrBy:''):''}
 function authOn(){return appusers.some(function(u){return u.active!==0})}
 function myRole(){if(!auLoaded)return null;if(!authOn())return SUPER;if(!me)return null;if(me.id==='owner')return SUPER;return roles().filter(function(q){return q.id===me.role})[0]||null}
-function allowed(t){var R=myRole();if(!R)return false;if((t==='cv'||t==='soz'||t==='banka'||t==='kk'||t==='akt')&&(R.id==='*'||R.id==='yonetici'))return true;return Array.isArray(R.tabs)&&R.tabs.indexOf(t)>-1}
+function allowed(t){var R=myRole();if(!R)return false;if(t==='ana')return true;if((t==='cv'||t==='soz'||t==='banka'||t==='kk'||t==='akt')&&(R.id==='*'||R.id==='yonetici'))return true;return Array.isArray(R.tabs)&&R.tabs.indexOf(t)>-1}
 var pwOpen=false;
 function ownScope(){var R=myRole();return !!R&&R.scope==='own'}
 function canCv(){return allowed('cv')}

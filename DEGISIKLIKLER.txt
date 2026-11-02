@@ -296,3 +296,11 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] v0.10.0 canlida
   - Coklu secimli aktivite raporu ve Excel duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
+
+[2 Kasim] Ana sayfa
+  - Uygulama acilinca artik kutulu bir ana sayfa geliyor: Ozet, Gelen faturalar, Giden faturalar gibi
+    tum bolumler gruplar halinde. Kutuya basinca o bolume gidiyor.
+  - Herkes yalnizca rolunun gorebildigi bolumleri gorur. Sol menude de "Ana sayfa" var.
+
+[2 Kasim] Surum v0.11.0 Bohr
+  - Ana sayfa ozelligiyle surum v0.10.0'dan v0.11.0 Bohr'a cikti.
