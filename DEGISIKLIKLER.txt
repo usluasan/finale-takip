@@ -338,3 +338,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.11.3 Bohr
   - Bu duzenlemeyle surum v0.11.3 oldu.
+
+[2 Kasim] v0.11.3 canlida
+  - Masraf ekrani duzenlemesi canli sistemde. Oncesinde veri yedegi alindi.
