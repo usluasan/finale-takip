@@ -277,3 +277,7 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.9.0 Pauling
   - Bu iki degisiklikle surum v0.8.2'den v0.9.0 Pauling'e cikti.
+
+[2 Kasim] v0.9.0 canlida
+  - Role bagli gorunurluk ve iki dilli CV canli sistemde. Oncesinde veri yedegi alindi.
+  - Ekip lideri rolu "Kendi kayitlari + ekibindekilerin kayitlari" yapildi.
