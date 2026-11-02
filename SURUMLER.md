@@ -425,3 +425,16 @@ Ekip lideri onayladığı masrafları göremiyordu: **Onayladığınız masrafla
 
 - Test edildi: yerel test verisiyle lider ve muhasebe görünümü. Test edilmedi: canlıda sbuyrucu ile.
 
+---
+
+## v0.11.2 Bohr — 2 Kasım 2026
+
+Masraf kayıt listesi tüm durumları gösterir; personel filtresi onay listelerini de süzer.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `e5bfb83` | C076 | Kayıt listesi ve filtre |
+| C077 commit'i (`git log --grep=C077`) | C077 | Sürüm v0.11.2 Bohr — **`v0.11.2` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test verisiyle muhasebe ve lider. Test edilmedi: canlıda gerçek hesapla.
+
