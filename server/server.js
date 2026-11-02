@@ -44,6 +44,12 @@ const hatali=ip=>{const now=Date.now(),d=deneme.get(ip);if(!d||now-d.t>=DENEME_P
 setInterval(()=>{const now=Date.now();for(const [k,d] of deneme)if(now-d.t>=DENEME_PENCERE)deneme.delete(k);q.sclean.run(now)},10*60*1000).unref();
 // Erişim: x-key (yalnız ADMIN_KEY, acil durum) ya da kullanıcı oturumu. {lvl:-1} = engelli, null = yok
 const erisim=r=>{const h=r.headers['x-key'];if(h!==undefined){const ip=ipOf(r);if(engelli(ip))return {lvl:-1};if(ADMIN_KEY&&tsEq(String(h),ADMIN_KEY))return {lvl:2,u:null};hatali(ip);return null}return oturum(cookieTok(r))};
+// Masraf okuma sunucuda da role bağlı: kapsam Ayarlar > Roller'den gelir (own: kendi, team: kendi + ekibi, all: herkes)
+const VARSAYILAN_KAPSAM={yonetici:'all',muhasebe:'all',personel:'own'};
+function kapsam(u){if(!u)return 'all';let rol=null;for(const r of q.list.all('settings')){const d=JSON.parse(r.data);if(Array.isArray(d.roles)&&d.roles.length){rol=d.roles.find(x=>x.id===u.role)||null;if(rol)return rol.scope==='own'||rol.scope==='team'?rol.scope:'all';return 'own'}}return VARSAYILAN_KAPSAM[u.role]||'own'}
+function masrafSuzgeci(u){const sc=kapsam(u);if(sc==='all')return ()=>true;const ben=new Set([u.id]),adlar=new Set([sifre.adNorm(u.name)]);
+  if(sc==='team')for(const r of q.list.all('appusers')){const x=JSON.parse(r.data);if(x.lead===u.id){ben.add(r.id);adlar.add(sifre.adNorm(x.name))}}
+  return d=>ben.has(d.by)||ben.has(d.appUser)||adlar.has(sifre.adNorm(d.person))||(!!u.partyId&&d.partyId===u.partyId)}
 const rid=()=>crypto.randomBytes(15).toString('base64url').slice(0,20);
 const clients=new Set();
 function emit(col){const m='data: '+JSON.stringify({col})+'\n\n';for(const c of clients)try{c.write(m)}catch(e){}}
@@ -88,17 +94,17 @@ http.createServer(async(req,res)=>{
         try{const b=JSON.parse((await body(req,40e6)).toString()||'{}');const r=await cv.ayikla(b);return J(res,200,{ok:1,veri:r.veri,model:r.model,kullanim:r.kullanim})}
         catch(e){console.error('CV ayıklama hatası:',e.kod||'',e.message);return J(res,e.kod==='anahtar_yok'?503:422,{error:e.kod||'hata',mesaj:String(e.message||'').slice(0,300)})}}
       if(p==='/api/cv/pdf'&&req.method==='POST'){
-        try{const b=JSON.parse((await body(req,2e6)).toString()||'{}');const pdf=await cv.pdfUret(b.veri||{}),id=rid();
+        try{const b=JSON.parse((await body(req,2e6)).toString()||'{}');const pdf=await cv.pdfUret(b.veri||{},b.dil),id=rid();
           const ad=String(b.ad||'CV').replace(/[^\p{L}\p{N} ._()-]/gu,'').trim().slice(0,120)||'CV';
           fs.writeFileSync(path.join(DATA,'blobs',id),pdf);q.bput.run(id,'application/pdf',ad+'.pdf',pdf.length);return J(res,200,{ok:1,id,ad:ad+'.pdf',boyut:pdf.length})}
         catch(e){console.error('CV PDF hatası:',e.kod||'',e.message);return J(res,e.kod==='chrome_yok'?503:500,{error:e.kod||'hata'})}}
       if(p==='/api/events'){res.writeHead(200,{'content-type':'text/event-stream','cache-control':'no-store',connection:'keep-alive','x-accel-buffering':'no'});res.write('retry: 3000\n\n');clients.add(res);const t=setInterval(()=>{try{res.write(': ping\n\n')}catch(e){}},25000);req.on('close',()=>{clearInterval(t);clients.delete(res)});return}
       let m;
       if(m=/^\/api\/c\/([^/]+)$/.exec(p)){const col=decodeURIComponent(m[1]);if(!okName(col))return J(res,400,{error:'name'});
-        if(req.method==='GET')return J(res,200,q.list.all(col).map(r=>({id:r.id,data:temizle(col,JSON.parse(r.data))})));
+        if(req.method==='GET'){const L=q.list.all(col).map(r=>({id:r.id,data:temizle(col,JSON.parse(r.data))}));if(col==='expenses'&&e.u){const f=masrafSuzgeci(e.u);return J(res,200,L.filter(x=>f(x.data)))}return J(res,200,L)}
         if(req.method==='POST'){const d=JSON.parse((await body(req,8e6)).toString());const id=rid();q.put.run(col,id,JSON.stringify(d));emit(col);return J(res,200,{id})}}
       if(m=/^\/api\/d\/([^/]+)\/([^/]+)$/.exec(p)){const col=decodeURIComponent(m[1]),id=decodeURIComponent(m[2]);if(!okName(col)||!okName(id))return J(res,400,{error:'name'});
-        if(req.method==='GET'){const r=q.get.get(col,id);return J(res,200,r?{exists:true,data:temizle(col,JSON.parse(r.data))}:{exists:false})}
+        if(req.method==='GET'){const r=q.get.get(col,id),d=r?temizle(col,JSON.parse(r.data)):null;if(d&&col==='expenses'&&e.u&&!masrafSuzgeci(e.u)(d))return J(res,200,{exists:false});return J(res,200,r?{exists:true,data:d}:{exists:false})}
         if(req.method==='PUT'){const d=JSON.parse((await body(req,8e6)).toString());
           if(col==='appusers'){const r=q.get.get(col,id),cur=r?JSON.parse(r.data):{};for(const k of GIZLI)if(d[k]===undefined&&cur[k]!==undefined)d[k]=cur[k]}  // istemci özeti bilmez; korunur
           q.put.run(col,id,JSON.stringify(d));emit(col);return J(res,200,{ok:1})}

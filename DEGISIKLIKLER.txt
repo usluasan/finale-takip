@@ -264,3 +264,16 @@ Yeni degisiklikler EN ALTA eklenir.
 [21 Ekim] v0.8.2 canlida: iki asamali masraf onayi
   - Personel masraflari artik once ekip liderine, sonra muhasebeye gidiyor. Oncesinde veri yedegi alindi.
   - Kesinti yaklasik 20 saniye, oturumlar kapanmadi.
+
+[2 Kasim] Masraf ve CV gorunurlugu role bagli
+  - Personel yalnizca kendi masrafini ve CV'sini gorur.
+  - Ekip lideri kendisini ve kendisine bagli personeli gorur; baskasi adina masraf giremez.
+  - Muhasebe ve yonetici herkesi gorur. Hepsi Ayarlar > Roller'deki "Hangi kayitlari gorur" secimine bagli.
+  - Masraflar artik sunucudan da role gore suzulerek geliyor.
+
+[2 Kasim] Her personele Turkce ve Ingilizce CV
+  - Ozgecmisler'de iki sutun var: Turkce CV ve Ingilizce CV. Biri digerini ezmez.
+  - Finale formatina cevirme secilen dilde calisir; Ingilizce CV'nin basliklari da Ingilizce olur.
+
+[2 Kasim] Surum v0.9.0 Pauling
+  - Bu iki degisiklikle surum v0.8.2'den v0.9.0 Pauling'e cikti.

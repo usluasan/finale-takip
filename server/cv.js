@@ -35,7 +35,8 @@ Kurallar:
 - Metni anlamını değiştirmeden aktar; kısaltma veya yorum ekleme. Belirgin yazım hatalarını düzeltebilirsin.
 - CV'de kişinin çalıştığı şirketin adresi, santral telefonu, sayfa numarası, logo yazısı gibi kalıp metinler varsa alma.
 - TC kimlik numarası, doğum tarihi, medeni hal, ev adresi gibi hassas kişisel verileri alma.
-- CV Türkçe değilse alan değerlerini Türkçeye çevir; firma ve ürün adlarını çevirme.`;
+- Alan değerlerini aşağıda belirtilen hedef dilde yaz: CV başka dildeyse çevir; firma ve ürün adlarını çevirme.`;
+const HEDEF={tr:'Hedef dil: Türkçe.',en:'Hedef dil: İngilizce (English).'};
 
 let istemci=null;
 function claude(){
@@ -58,7 +59,7 @@ async function ayikla(girdi){
       model:MODEL,max_tokens:16000,
       betas:['server-side-fallback-2026-07-01'],fallbacks:'default',   // güvenlik sınıflandırıcısı reddederse önerilen modelde yeniden dener
       output_config:{effort:'medium',format:{type:'json_schema',schema:SEMA}},
-      system:SISTEM,
+      system:SISTEM+'\n'+(HEDEF[girdi.dil]||HEDEF.tr),
       messages:[{role:'user',content:[blok,{type:'text',text:'Bu CV\'yi şablon alanlarına aktar.'}]}]});
   }catch(e){
     if(e instanceof Anthropic.AuthenticationError){const x=new Error('anahtar_gecersiz');x.kod='anahtar_gecersiz';throw x}
@@ -84,13 +85,17 @@ function temiz(v){v=v||{};return {ad:s(v.ad,200),unvan:s(v.unvan,200),telefon:s(
   kisisel:(Array.isArray(v.kisisel)?v.kisisel:[]).slice(0,40).map(k=>({baslik:s(k&&k.baslik,100),deger:s(k&&k.deger,1000)})).filter(k=>k.baslik.trim()||k.deger.trim())}}
 
 const E=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const SATIR=[['musteri','Müşteri'],['sure','Devam süresi'],['sektor','Sektör'],['proje','Proje tanımı'],['gorev','Projedeki görevi'],['sorumluluklar','Sorumluluklar']];
+// Şablon başlıkları CV diline göre
+const ETIKET={tr:{satir:['Müşteri','Devam süresi','Sektör','Proje tanımı','Projedeki görevi','Sorumluluklar'],profil:'Profil',ozet:'SAP Deneyimleri – Özet',proje:'SAP Proje Deneyimleri',kisisel:'Kişisel Bilgiler'},
+  en:{satir:['Customer','Duration','Sector','Project description','Role in project','Responsibilities'],profil:'Profile',ozet:'SAP Experience – Summary',proje:'SAP Project Experience',kisisel:'Personal Information'}};
+const ANAHTAR=['musteri','sure','sektor','proje','gorev','sorumluluklar'];
 const ADRES='<div class="k">FİNALE YAZILIM DANIŞMANLIK</div><div>Cevizli Mah. Bağdat Cad. Ofistanbul Plaza No:538 D:50</div><div>Maltepe/İstanbul</div>';
 
 // Finale CV şablonu (Hasan Uslu CV'sinin düzeni): her sayfada logo ve adres altlığı, projeler ayrı tablolarda
-function sablon(v){
-  const proje=p=>'<table class="kayit">'+SATIR.map(([k,b])=>'<tr'+(k==='sorumluluklar'?' class="s"':'')+'><td class="k">'+b+'</td><td>'+(k==='musteri'?'<b>'+E(p[k])+'</b>':E(p[k]).replace(/\n/g,'<br>'))+'</td></tr>').join('')+'</table>';
-  return `<!doctype html><html lang="tr"><head><meta charset="utf-8"><style>
+function sablon(v,dil){
+  const T=ETIKET[dil]||ETIKET.tr;
+  const proje=p=>'<table class="kayit">'+ANAHTAR.map((k,i)=>[k,T.satir[i]]).map(([k,b])=>'<tr'+(k==='sorumluluklar'?' class="s"':'')+'><td class="k">'+b+'</td><td>'+(k==='musteri'?'<b>'+E(p[k])+'</b>':E(p[k]).replace(/\n/g,'<br>'))+'</td></tr>').join('')+'</table>';
+  return `<!doctype html><html lang="${dil==='en'?'en':'tr'}"><head><meta charset="utf-8"><style>
 @page{size:A4;margin:0}
 html,body{margin:0;padding:0}
 body{font-family:Arial,"Liberation Sans",Helvetica,sans-serif;color:#000;font-size:10.5pt}
@@ -126,10 +131,10 @@ table.kis td.k{width:126pt}
 <tbody><tr><td><div class="ic">
 <div class="kapak"><p class="ad">${E(v.ad)}</p><p class="un">${E(v.unvan)}</p><div class="k">FİNALE YAZILIM DANIŞMANLIK</div><div class="ad2">Cevizli Mah. Bağdat Cad. Ofistanbul Plaza No:538 D:50<br>Maltepe/İstanbul</div>
 <div class="il">${v.telefon?'T: '+E(v.telefon)+'<br>':''}${v.eposta?'E: '+E(v.eposta):''}</div></div>
-${v.profil?'<h2>Profil</h2><p class="profil">'+E(v.profil)+'</p>':''}
-${v.ozet.length?'<h2>SAP Deneyimleri – Özet</h2><ul class="oz">'+v.ozet.map(o=>'<li>'+E(o)+'</li>').join('')+'</ul>':''}
-${v.projeler.length?'<div class="yeni"></div><div class="b3">SAP Proje Deneyimleri</div>'+v.projeler.map(proje).join(''):''}
-${v.kisisel.length?'<h2 style="margin-left:0;margin-right:0">Kişisel Bilgiler</h2><table class="kis">'+v.kisisel.map(k=>'<tr><td class="k">'+E(k.baslik)+'</td><td>'+E(k.deger)+'</td></tr>').join('')+'</table>':''}
+${v.profil?'<h2>'+T.profil+'</h2><p class="profil">'+E(v.profil)+'</p>':''}
+${v.ozet.length?'<h2>'+T.ozet+'</h2><ul class="oz">'+v.ozet.map(o=>'<li>'+E(o)+'</li>').join('')+'</ul>':''}
+${v.projeler.length?'<div class="yeni"></div><div class="b3">'+T.proje+'</div>'+v.projeler.map(proje).join(''):''}
+${v.kisisel.length?'<h2 style="margin-left:0;margin-right:0">'+T.kisisel+'</h2><table class="kis">'+v.kisisel.map(k=>'<tr><td class="k">'+E(k.baslik)+'</td><td>'+E(k.deger)+'</td></tr>').join('')+'</table>':''}
 </div></td></tr></tbody></table></body></html>`;
 }
 
@@ -139,11 +144,11 @@ function chromeYolu(){
 }
 
 // Onaylanan alanlardan PDF üretir; PDF baytlarını döndürür
-function pdfUret(veri){return new Promise((ok,no)=>{
+function pdfUret(veri,dil){return new Promise((ok,no)=>{
   const chrome=chromeYolu();if(!chrome){const e=new Error('chrome_yok');e.kod='chrome_yok';return no(e)}
   const d=fs.mkdtempSync(path.join(os.tmpdir(),'finale-cv-'));
   const temizle=()=>{try{fs.rmSync(d,{recursive:true,force:true})}catch(e){}};
-  try{fs.copyFileSync(LOGO,path.join(d,'logo.png'));fs.writeFileSync(path.join(d,'cv.html'),sablon(temiz(veri)))}catch(e){temizle();return no(e)}
+  try{fs.copyFileSync(LOGO,path.join(d,'logo.png'));fs.writeFileSync(path.join(d,'cv.html'),sablon(temiz(veri),dil))}catch(e){temizle();return no(e)}
   // Şablon yalnızca kaçışlanmış metin içerir; tarayıcı ağ erişimi olmadan yerel dosyayı basar
   execFile(chrome,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-pdf-header-footer','--no-first-run',
     '--user-data-dir='+path.join(d,'profil'),'--print-to-pdf='+path.join(d,'cv.pdf'),'file://'+path.join(d,'cv.html')],{timeout:90000},err=>{
