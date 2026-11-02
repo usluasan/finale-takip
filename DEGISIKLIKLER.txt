@@ -281,3 +281,7 @@ Yeni degisiklikler EN ALTA eklenir.
 [2 Kasim] v0.9.0 canlida
   - Role bagli gorunurluk ve iki dilli CV canli sistemde. Oncesinde veri yedegi alindi.
   - Ekip lideri rolu "Kendi kayitlari + ekibindekilerin kayitlari" yapildi.
+
+[2 Kasim] Duzeltme: Excel'e aktar
+  - Kendi sunucumuzdaki uygulamada Excel'e aktar dugmeleri dosya uretmiyordu (ilk surumden beri).
+    Duzeltildi: genel Excel raporu ve aktivite raporlari artik iniyor.

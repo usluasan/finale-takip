@@ -16,7 +16,8 @@
       onSnapshot:function(ok,err){sub(c,function(){api('GET',u).then(function(r){ok({exists:r.exists,id:id,data:function(){return r.exists?frz(r.data):undefined}})}).catch(function(e){if(err)err(e)})})}}}
   };
   var assets={upload:function(f,o){var type=(o&&o.type)||f.type||'application/octet-stream';return api('POST','api/blob',f instanceof Blob?f:new Blob([f]),{'x-type':type,'x-name':encodeURIComponent(f.name||'')})}};
-  var downloads={save:function(o){var u=URL.createObjectURL(o.data),a=document.createElement('a');a.href=u;a.download=o.filename||'dosya';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u)},4000);return Promise.resolve()}};
+  // Sayfa dosyayı Blob ya da ArrayBuffer (Excel) olarak verir
+  var downloads={save:function(o){var b=o.data instanceof Blob?o.data:new Blob([o.data],{type:o.type||'application/octet-stream'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=o.filename||'dosya';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u)},4000);return Promise.resolve()}};
   var owner=false;
   var user={isOwner:function(){return Promise.resolve(owner)}};
   var ready=null;
