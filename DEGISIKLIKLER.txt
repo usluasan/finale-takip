@@ -304,3 +304,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.11.0 Bohr
   - Ana sayfa ozelligiyle surum v0.10.0'dan v0.11.0 Bohr'a cikti.
+
+[2 Kasim] v0.11.0 canlida
+  - Ana sayfa canli sistemde. Oncesinde veri yedegi alindi.
