@@ -318,3 +318,12 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] v0.11.1 canlida
   - Ekip lideri duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
+
+[2 Kasim] Masraf listesi ve personel filtresi duzeltildi
+  - Masraf kayitlari listesi artik onay bekleyen ve reddedilenleri de gosteriyor; yeni Durum sutunu var.
+  - Personel filtresi "Onayiniz bekleyen masraflar" listesini de suzuyor.
+  - Ay filtresi onay listelerini suzmez, yalniz kayit listesini suzer.
+  - "Odendi" kutusu yalniz onaylanmis masrafta cikar.
+
+[2 Kasim] Surum v0.11.2 Bohr
+  - Bu duzeltmeyle surum v0.11.2 oldu.
