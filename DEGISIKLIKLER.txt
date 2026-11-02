@@ -293,3 +293,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.10.0 Franklin
   - Coklu secimli aktivite raporu ve Excel duzeltmesiyle surum v0.9.0'dan v0.10.0 Franklin'e cikti.
+
+[2 Kasim] v0.10.0 canlida
+  - Coklu secimli aktivite raporu ve Excel duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
