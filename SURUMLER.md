@@ -438,3 +438,16 @@ Masraf kayıt listesi tüm durumları gösterir; personel filtresi onay listeler
 
 - Test edildi: yerel test verisiyle muhasebe ve lider. Test edilmedi: canlıda gerçek hesapla.
 
+---
+
+## v0.11.3 Bohr — 2 Kasım 2026
+
+Onay bekleyen masraflar her ayda listede; masraf tabloları ekrana sığar; sayfa genişliği 1600 piksel.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `953e359` | C079 | Liste ve ekran düzeni |
+| C080 commit'i (`git log --grep=C080`) | C080 | Sürüm v0.11.3 Bohr — **`v0.11.3` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test verisiyle 1000 piksel genişlikte. Test edilmedi: canlıda gerçek hesapla, diğer sayfaların yeni genişliği.
+
