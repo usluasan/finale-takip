@@ -327,3 +327,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.11.2 Bohr
   - Bu duzeltmeyle surum v0.11.2 oldu.
+
+[2 Kasim] v0.11.2 canlida
+  - Masraf listesi ve filtre duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
