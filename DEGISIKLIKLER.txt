@@ -315,3 +315,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] Surum v0.11.1 Bohr
   - Bu duzeltmeyle surum v0.11.1 oldu.
+
+[2 Kasim] v0.11.1 canlida
+  - Ekip lideri duzeltmesi canli sistemde. Oncesinde veri yedegi alindi.
