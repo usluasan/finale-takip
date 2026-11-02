@@ -307,3 +307,11 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] v0.11.0 canlida
   - Ana sayfa canli sistemde. Oncesinde veri yedegi alindi.
+
+[2 Kasim] Ekip lideri onayladigi masraflari goremiyordu (duzeltildi)
+  - Masraflar sekmesinde yeni "Onayladiginiz masraflar" bolumu var. Lider, onayladigi masraflari
+    muhasebe karar verene kadar burada gorur; muhasebe reddederse nedeniyle burada kalir.
+  - Muhasebe onaylayinca masraf asagidaki kayit listesine gecer.
+
+[2 Kasim] Surum v0.11.1 Bohr
+  - Bu duzeltmeyle surum v0.11.1 oldu.
