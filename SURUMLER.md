@@ -379,3 +379,23 @@ Role bağlı personel görünürlüğü ve iki dilli CV. claude.ai artifact'ı g
 - Sunucu rol kontrolü yalnız masraf okumada; yazma ve diğer koleksiyonlar hâlâ arayüzde.
 - Kullanıcı adı personel kartı adıyla eşleşmeyenler kendi CV'lerini göremez (kart adı düzeltilmeli).
 
+---
+
+## v0.10.0 Franklin — 2 Kasım 2026
+
+Aktivite raporunda çoklu seçim; Excel'e aktar düzeltmesi. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Danışman ve proje filtreleri çoklu seçim; liste, Excel ve onay bekleyenler aynı filtreyi kullanır.
+- Onay bekleyenlerde Excel ve "Listelenenleri onayla".
+- Düzeltme: bağımsız uygulamada Excel'e aktar ilk paketten beri dosya üretmiyordu.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `4f0a7f9` | C066 | Excel'e aktar düzeltmesi |
+| `b2f0364` | C067 | Çoklu seçimli aktivite raporu |
+| C068 commit'i (`git log --grep=C068`) | C068 | Sürüm v0.10.0 Franklin — **`v0.10.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi: 18 test aktivitesiyle filtreler, toplu onay, Excel içerikleri. Test edilmedi: gerçek veri, telefon görünümü.
+
