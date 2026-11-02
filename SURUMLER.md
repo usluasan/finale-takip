@@ -412,3 +412,16 @@ Açılışta rolüne göre kutulu **Ana sayfa**. claude.ai artifact'ı güncelle
 
 - Test edildi: üç rolle kutular, geçişler, telefon genişliği. Test edilmedi: gerçek veri, açık tema.
 
+---
+
+## v0.11.1 Bohr — 2 Kasım 2026
+
+Ekip lideri onayladığı masrafları göremiyordu: **Onayladığınız masraflar** bölümü eklendi.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `d76fe43` | C073 | Onayladığınız masraflar |
+| C074 commit'i (`git log --grep=C074`) | C074 | Sürüm v0.11.1 Bohr — **`v0.11.1` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test verisiyle lider ve muhasebe görünümü. Test edilmedi: canlıda sbuyrucu ile.
+
