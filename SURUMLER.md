@@ -353,3 +353,29 @@ Düzeltme: konteyner `init: true` ile çalışır; CV PDF üretiminde açılan C
 | `23413ef` | C059 | Zombi süreç düzeltmesi |
 | C060 commit'i (`git log --grep=C060`) | C060 | Sürüm v0.8.2 — **`v0.8.2` etiketi bu commit üzerinde** |
 
+---
+
+## v0.9.0 Pauling — 2 Kasım 2026
+
+Role bağlı personel görünürlüğü ve iki dilli CV. claude.ai artifact'ı güncellenmedi (hâlâ **sürüm 56**).
+
+**İçerik**
+- Personel kendini, ekip lideri kendisi + bağlı personeli, muhasebe ve yönetici herkesi görür (masraf ve Özgeçmişler); Ayarlar > Roller'e bağlı.
+- Masraf okuma sunucuda da role göre süzülür. Toplu masraf yükleme yalnız son onaycılarda.
+- Personel başına Türkçe ve İngilizce CV; Finale dönüştürme seçilen dilde.
+
+**Commit'ler**
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `ec41a56` | C062, C063 | Görünürlük ve iki dilli CV |
+| C064 commit'i (`git log --grep=C064`) | C064 | Sürüm v0.9.0 Pauling — **`v0.9.0` etiketi bu commit üzerinde** |
+
+**Test durumu**
+- Test edildi: test rolleriyle sunucu yanıtı, lider ve personel ekranları, İngilizce CV ve PDF.
+- Test edilmedi: gerçek yapay zekâ (sunucuda anahtar yok).
+
+**Bilinen eksikler**
+- Sunucu rol kontrolü yalnız masraf okumada; yazma ve diğer koleksiyonlar hâlâ arayüzde.
+- Kullanıcı adı personel kartı adıyla eşleşmeyenler kendi CV'lerini göremez (kart adı düzeltilmeli).
+
