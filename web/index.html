@@ -116,8 +116,8 @@ th,td{padding:8px 10px}
 body{padding-inline:0}
 .wrap{max-width:1600px;padding-inline:20px}
 #mbar{display:flex;position:sticky;top:0;z-index:12;align-items:center;gap:12px;margin:-20px -20px 0;padding:10px 16px;background:linear-gradient(100deg,var(--side1),var(--side2) 60%,#06b6d4);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2)}
-#mbar button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:10px;width:44px;height:40px;font-size:22px;line-height:1;cursor:pointer;color:#fff}
-#mbar b{font-family:var(--f-display);font-size:18px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+#mmenu{flex:none;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:10px;width:44px;height:40px;font-size:22px;line-height:1;cursor:pointer;color:#fff}
+#mbar b{font-family:var(--f-display);font-size:18px;flex:1 1 120px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
 nav{position:fixed;top:0;bottom:0;left:0;width:262px;z-index:15;flex-direction:column;flex-wrap:nowrap;gap:0;overflow-y:auto;border:0;padding:16px 0 28px;background:linear-gradient(180deg,var(--side1),var(--side2));color:#fff;transition:transform .22s}
 nav .nbrand{display:flex;gap:12px;align-items:center;padding:4px 18px 16px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:2px}
 nav .nbrand span{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#22d3ee,#0891b2);display:grid;place-items:center;font:700 22px var(--f-display);color:#083344}
@@ -140,6 +140,10 @@ nav button[data-t=ayar]{--gc:#9fb3ae}
 @media (min-width:901px){body{padding-left:262px;transition:padding .22s}body.nclosed{padding-left:0}body.nclosed nav{transform:translateX(-102%)}#savebar{left:262px}body.nclosed #savebar{left:0}}
 @media (max-width:900px){nav{width:min(84vw,310px);transform:translateX(-102%)}body.mnav nav{transform:none;box-shadow:6px 0 28px rgba(0,0,0,.35)}body.mnav #mscrim{display:block}}
 @media (max-width:640px){.wrap{padding-inline:12px}#mbar{margin-inline:-12px}}
+#mbar{flex-wrap:wrap}#mbar .mctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+#mbar .mctl .sub{color:rgba(255,255,255,.85)}#mbar .mctl .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);color:#fff}#mbar .mctl .btn:hover{background:rgba(255,255,255,.24)}
+#mbar .mctl select{font-weight:600;padding-right:28px}#mbar .mctl select option{background:var(--surface);color:var(--ink)}
+@media (max-width:640px){#mbar{gap:8px;padding-block:8px}#mbar #who{display:none}#mbar .mctl{width:100%;flex-wrap:nowrap;gap:6px}#mbar .mctl .btn{font-size:12px;padding:6px 8px;white-space:nowrap}#mbar .mctl select{flex:1;min-width:0}}
 header{background:var(--surface);background-image:linear-gradient(120deg,var(--accent-soft),transparent 60%);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
 h1{color:var(--accent)}
 .kpis{border:0;background:none;gap:12px;border-radius:0}
@@ -180,12 +184,11 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
 <body>
 
 <div class="wrap">
-  <div id="mbar"><button type="button" id="mmenu" aria-label="Menü">&#9776;</button><b id="mtitle">Finale Takibi</b></div>
+  <div id="mbar"><button type="button" id="mmenu" aria-label="Menü">&#9776;</button><b id="mtitle">Finale Takibi</b><div class="mctl"><span class="sub" id="who"></span><button class="btn ghost small" data-act="pwopen" id="btnPw" hidden>Parolamı değiştir</button><button class="btn ghost small" data-act="logout" id="btnOut" hidden>Çıkış</button><select id="coSel" aria-label="Şirket" autocomplete="off" class="btn ghost"><option value="">Tüm şirketler (toplu)</option></select><button class="btn ghost small" data-act="coman">Ayarlar</button></div></div>
   <div id="mscrim"></div>
   <header>
     <div><h1>Finale Takibi</h1><div class="sub" id="today"></div></div>
     <div class="row">
-      <span class="sub" id="who"></span><button class="btn ghost small" data-act="pwopen" id="btnPw" hidden>Parolamı değiştir</button><button class="btn ghost small" data-act="logout" id="btnOut" hidden>Çıkış</button><select id="coSel" aria-label="Şirket" autocomplete="off" class="btn ghost" style="background:var(--surface);font-weight:600"><option value="">Tüm şirketler (toplu)</option></select><button class="btn ghost small" data-act="coman">Ayarlar</button>
       <button class="btn ghost" id="btnExport">Excel'e aktar</button>
       <label class="btn ghost" for="fileImp" style="cursor:pointer">Excel'den yükle</label>
       <input type="file" id="fileImp" accept=".xlsx,.xls" hidden>
