@@ -464,3 +464,16 @@ Açılışta varsayılan olarak tüm şirketler; son seçim hatırlanmaz.
 
 - Test edildi: yerel test verisiyle iki şirketli ve tek şirketli kullanıcı. Test edilmedi: canlıda gerçek hesapla.
 
+---
+
+## v0.11.5 Bohr — 3 Kasım 2026
+
+Kullanıcı ve şirket kontrolleri üst çubukta.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `21e9f12` | C085 | Üst çubuk |
+| C086 commit'i (`git log --grep=C086`) | C086 | Sürüm v0.11.5 Bohr — **`v0.11.5` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test verisiyle masaüstü ve telefon. Test edilmedi: canlıda gerçek hesapla, açık tema.
+
