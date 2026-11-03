@@ -451,3 +451,16 @@ Onay bekleyen masraflar her ayda listede; masraf tabloları ekrana sığar; sayf
 
 - Test edildi: yerel test verisiyle 1000 piksel genişlikte. Test edilmedi: canlıda gerçek hesapla, diğer sayfaların yeni genişliği.
 
+---
+
+## v0.11.4 Bohr — 3 Kasım 2026
+
+Açılışta varsayılan olarak tüm şirketler; son seçim hatırlanmaz.
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `3f58753` | C082 | Varsayılan tüm şirketler |
+| C083 commit'i (`git log --grep=C083`) | C083 | Sürüm v0.11.4 Bohr — **`v0.11.4` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test verisiyle iki şirketli ve tek şirketli kullanıcı. Test edilmedi: canlıda gerçek hesapla.
+
