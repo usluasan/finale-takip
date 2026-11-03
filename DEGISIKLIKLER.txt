@@ -341,3 +341,11 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [2 Kasim] v0.11.3 canlida
   - Masraf ekrani duzenlemesi canli sistemde. Oncesinde veri yedegi alindi.
+
+[3 Kasim] Acilista tum sirketler
+  - Uygulama her acilista "Tum sirketler" ile gelir; onceki secim hatirlanmaz.
+  - Yalnizca tek sirkete yetkisi olan kullanicida o sirket secili gelir.
+  - Yeni kayit (masraf, fatura vb.) eklerken ustten sirket secmek yine gerekir.
+
+[3 Kasim] Surum v0.11.4 Bohr
+  - Bu degisiklikle surum v0.11.4 oldu.

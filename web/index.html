@@ -185,7 +185,7 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
   <header>
     <div><h1>Finale Takibi</h1><div class="sub" id="today"></div></div>
     <div class="row">
-      <span class="sub" id="who"></span><button class="btn ghost small" data-act="pwopen" id="btnPw" hidden>Parolamı değiştir</button><button class="btn ghost small" data-act="logout" id="btnOut" hidden>Çıkış</button><select id="coSel" aria-label="Şirket" class="btn ghost" style="background:var(--surface);font-weight:600"><option value="">Tüm şirketler (toplu)</option></select><button class="btn ghost small" data-act="coman">Ayarlar</button>
+      <span class="sub" id="who"></span><button class="btn ghost small" data-act="pwopen" id="btnPw" hidden>Parolamı değiştir</button><button class="btn ghost small" data-act="logout" id="btnOut" hidden>Çıkış</button><select id="coSel" aria-label="Şirket" autocomplete="off" class="btn ghost" style="background:var(--surface);font-weight:600"><option value="">Tüm şirketler (toplu)</option></select><button class="btn ghost small" data-act="coman">Ayarlar</button>
       <button class="btn ghost" id="btnExport">Excel'e aktar</button>
       <label class="btn ghost" for="fileImp" style="cursor:pointer">Excel'den yükle</label>
       <input type="file" id="fileImp" accept=".xlsx,.xls" hidden>
@@ -2052,8 +2052,8 @@ document.addEventListener('click',function(e){var a=e.target.dataset&&e.target.d
 /* ==== ÇOKLU ŞİRKET ==== */
 var baAll=[],btAll=[],kcAll=[],ktAll=[],ba=[],bt=[],kc=[],kt=[],bnLoaded=0,baEdit=null,kcEdit=null,stPrev=null;
 var contractsAll=[], contracts=[], szLoaded=false, szEdit=null;
-var cos=[{id:'finale',name:'Finale'}], curCo='', loansAll=[], invsAll=[], recsAll=[], expsAll=[];
-try{curCo=localStorage.getItem('finale_co')||''}catch(e){}
+var cos=[{id:'finale',name:'Finale'}], coLoaded=false, curCo='', loansAll=[], invsAll=[], recsAll=[], expsAll=[];
+try{localStorage.removeItem('finale_co')}catch(e){}  // açılışta her zaman tüm şirketler (Hasan'ın 3 Kasım kararı)
 function coOf(x){return (x&&x.co)||'finale'}
 function coName(id){var c=cos.filter(function(q){return q.id===id})[0];return c?c.name:id}
 function coTag(x){return curCo?'':'<span class="pill wait" style="margin-right:6px">'+esc(coName(coOf(x)))+'</span>'}
@@ -2068,7 +2068,7 @@ function coApply(){var f=function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)
   if(document.activeElement!==$('cashIn'))$('cashIn').value=fc(cash.amt);$('cashIn').disabled=!curCo;
   render()}
 function coSelFill(){var A=cos.filter(function(c){return coAllowed(c.id)});if(!auLoaded)A=cos;
-  if(curCo&&!A.some(function(c){return c.id===curCo}))curCo='';if(!curCo&&A.length===1)curCo=A[0].id;
+  if(curCo&&!A.some(function(c){return c.id===curCo}))curCo='';if(!curCo&&A.length===1&&auLoaded&&coLoaded)curCo=A[0].id;  // tek yetkili şirket: listeler yüklenince seçilir
   $('coSel').innerHTML=(A.length>1?'<option value="">Tüm şirketler (toplu)</option>':'')+A.map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>'}).join('');$('coSel').value=curCo;
   $('today').textContent='Bugün '+fd(TODAY)+' · tutarlar TL · '+(curCo?coName(curCo)+' kayıtları':'tüm şirketler birlikte; kayıt eklemek için şirket seçin')}
 function coModal(){$('co_list').innerHTML=cos.map(function(c){return '<div class="row" style="margin-bottom:8px"><input id="con_'+esc(c.id)+'" value="'+esc(c.name)+'" aria-label="Şirket adı" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-width:0;flex:1"><button class="btn ghost small" data-act="coren" data-id="'+esc(c.id)+'">Adı kaydet</button></div>'}).join('')}
@@ -2081,10 +2081,10 @@ document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.data
   if(a==='cashsave'){e.stopImmediatePropagation();var v=num($('cashIn').value);if(!curCo){toast('Açılış bakiyesi şirket bazında girilir; üstten şirket seçin');return}if(isNaN(v)){toast('Geçerli bir tutar girin');return}
     var by=cashBy();by[curCo]=Math.round(v*100)/100;setSave({cashBy:by},'Açılış bakiyesi kaydedildi ✓');return}
 },true);
-document.addEventListener('change',function(e){if(e.target.id!=='coSel')return;curCo=e.target.value;try{localStorage.setItem('finale_co',curCo)}catch(er){}
+document.addEventListener('change',function(e){if(e.target.id!=='coSel')return;curCo=e.target.value;
   if(nDirty()){toast('Kaydedilmemiş işaretler var; önce kaydedin');} coSelFill();coApply()});
 function coInit(){db.collection('companies').onSnapshot(function(s){var L=s.docs.map(function(d){var x=JSON.parse(JSON.stringify(d.data()||{}));x.id=d.id;return x}).filter(function(x){return x.name});
-  if(!L.some(function(x){return x.id==='finale'}))L.unshift({id:'finale',name:'Finale',order:0});cos=L.sort(function(a,b){return (a.order||0)-(b.order||0)});coSelFill();coModal();auRender();coApply()},function(){})}
+  if(!L.some(function(x){return x.id==='finale'}))L.unshift({id:'finale',name:'Finale',order:0});cos=L.sort(function(a,b){return (a.order||0)-(b.order||0)});coLoaded=true;coSelFill();coModal();auRender();coApply()},function(){})}
 /* ==== AYARLAR ==== */
 var DEFL={rec:['Maaş','SGK','Personel yan giderleri','Vergi','Kira','Abonelik / lisans','Diğer'],exp:['Yemek','Ulaşım','Yakıt','Konaklama','Otopark / köprü','Temsil / ağırlama','Kırtasiye / malzeme','Diğer'],
   in:['Dış kaynak / danışman','Yazılım lisansı / abonelik','Kira ve aidat','Ofis giderleri','Mali müşavir / hukuk','Pazarlama / reklam','Seyahat / konaklama','Donanım / ekipman','İletişim / internet','Sigorta','Diğer gider'],
