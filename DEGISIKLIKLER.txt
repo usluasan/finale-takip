@@ -362,3 +362,9 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [3 Kasim] v0.11.5 canlida
   - Ust cubuk degisikligi canli sistemde. Oncesinde veri yedegi alindi.
+
+[11 Kasim] Masraflar Excel'e
+  - Personel masraflari sekmesinde, ay ve personel seciminin yanina "Excel'e aktar" dugmesi geldi.
+  - Ekranda gorunen liste (secili ay + onay bekleyenler, secili personel) tek sayfalik Excel olarak iner.
+  - Dosyada onay durumu sutunu ve en altta toplam satiri var.
+  - Muhasebecinin istegi uzerine. Ustteki genel "Excel'e aktar" eskisi gibi tum veriyi indirir.

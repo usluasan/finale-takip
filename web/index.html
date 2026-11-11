@@ -281,7 +281,7 @@ tbody tr:not(.tot):hover td{background:var(--accent-soft)}
       <textarea id="xb_txt" rows="6" aria-label="Excel satırları" placeholder="Excel satırlarını buraya yapıştırın" style="width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:13px var(--f-num);white-space:pre;overflow:auto"></textarea>
       <div class="row"><button class="btn ghost" data-act="xbprev">Önizle</button><button class="btn" id="xb_save" data-act="xbsave" disabled>Kaydet</button><span class="msg" id="xb_msg"></span></div><div id="xb_prev"></div>
     </div></details>
-    <div class="row" id="x_filt" style="margin-bottom:12px"><label class="msg" for="x_fm">Kayıt listesi ayı</label><input id="x_fm" type="month" autocomplete="off" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px"><select id="x_fp" aria-label="Personel filtresi" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px"><option value="">Tüm personel</option></select><span class="msg">Ayı boş bırakırsanız tüm kayıtlar listelenir; onay bekleyenler her ayda görünür. Personel seçimi onay listelerini de süzer.</span></div>
+    <div class="row" id="x_filt" style="margin-bottom:12px"><label class="msg" for="x_fm">Kayıt listesi ayı</label><input id="x_fm" type="month" autocomplete="off" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px"><select id="x_fp" aria-label="Personel filtresi" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px"><option value="">Tüm personel</option></select><button class="btn ghost small" data-act="xxls">Excel'e aktar</button><span class="msg">Ayı boş bırakırsanız tüm kayıtlar listelenir; onay bekleyenler her ayda görünür. Personel seçimi onay listelerini de süzer.</span></div>
     <div id="expL" style="display:flex;flex-direction:column;gap:12px"></div>
   </section>
   <section id="s-akt" hidden>
@@ -800,7 +800,7 @@ function doExport(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cd),'CARİLER');
   var rd=[['GİDER','KATEGORİ','TUTAR','SIKLIK (AY)','ÖDEME GÜNÜ','BAŞLANGIÇ','BİTİŞ']];recs.forEach(function(r){rd.push([r.name,r.cat||'',r.amount,r.freq||1,r.day,r.start||'',r.end||''])});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rd),'DÜZENLİ GİDERLER');
-  var xd=[['TARİH','PERSONEL KODU','PERSONEL','KATEGORİ','AÇIKLAMA','İŞLETME','FİŞ NO','FİŞ','TUTAR','KDV','ÖDEME TARİHİ','DURUM','FATURA EDİLECEK','FATURA MÜŞTERİSİ','PROJE']];exps.slice().sort(function(a,b){return a.date<b.date?-1:1}).forEach(function(x){xd.push([fd(x.date),x.partyCode||'',x.person||'',x.cat||'',x.desc||'',x.vendor||'',x.no||'',x.receipt?'FİŞLİ':'FİŞSİZ',x.total||0,x.vat||0,x.due?fd(x.due):'',x.paid?'ÖDENDİ':'',x.bill?'EVET':'',x.bill?(x.billCust||''):'',x.bill?(x.billPrjName||''):''])});
+  var xd=xSheet(exps.slice().sort(function(a,b){return a.date<b.date?-1:1}));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(xd),'PERSONEL MASRAFLARI');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(akSheet(acts.slice().sort(function(a,b){return a.date<b.date?-1:1}))),'AKTİVİTELER');
   var pr=[['KALEM'].concat(AY).concat(['BUGÜNE KADAR'])];plRows(+TODAY.slice(0,4)).R.forEach(function(r){if(r.h)pr.push([r.h]);else if(r.v)pr.push([r.l].concat(r.v.map(function(v){return +v.toFixed(2)})).concat([+sL(r.v,+TODAY.slice(0,4)).toFixed(2)]));else if(r.tot!=null)pr.push([r.l,'','','','','','','','','','','','',+r.tot.toFixed(2)])});
@@ -1590,6 +1590,18 @@ document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.data
 document.addEventListener('change',function(e){var t=e.target;if(!t.classList||!t.classList.contains('rchk'))return;var pd={};pd[t.dataset.ym]=t.checked?1:0;t.disabled=true;
   db.doc('recurring/'+t.dataset.id).update({paid:pd}).then(function(){toast('Kaydedildi ✓')}).catch(function(er){toast('KAYDEDİLEMEDİ: '+((er&&er.code)||er));render()})});
 /* ==== PERSONEL MASRAFLARI ==== */
+/* Masraf sayfası (Excel): genel dışa aktarım ve masraf sekmesindeki filtreli dışa aktarım aynı sütunları kullanır; onay=1 ise onay durumu da eklenir */
+function xSheet(L,onay){var d=[['TARİH','PERSONEL KODU','PERSONEL','KATEGORİ','AÇIKLAMA','İŞLETME','FİŞ NO','FİŞ','TUTAR','KDV','ÖDEME TARİHİ','DURUM','FATURA EDİLECEK','FATURA MÜŞTERİSİ','PROJE'].concat(onay?['ONAY DURUMU']:[])];
+  L.forEach(function(x){var r=[fd(x.date),x.partyCode||'',x.person||'',x.cat||'',x.desc||'',x.vendor||'',x.no||'',x.receipt?'FİŞLİ':'FİŞSİZ',x.total||0,x.vat||0,x.due?fd(x.due):'',x.paid?'ÖDENDİ':'',x.bill?'EVET':'',x.bill?(x.billCust||''):'',x.bill?(x.billPrjName||''):''];
+    if(onay)r.push(x.status==='red'?'REDDEDİLDİ'+(x.rejNote?' · '+x.rejNote:''):(x.status==='bekliyor'||x.status==='lider')?xStTxt(x)||'ONAY BEKLİYOR':'ONAYLANDI');d.push(r)});return d}
+/* Masraf sekmesindeki liste: ay ve personel süzgeci (onay bekleyenler her ayda görünür), yeniden eskiye */
+function xListe(xAll){var fm2=$('x_fm').value,fp=$('x_fp').value;return xAll.filter(function(x){return (!fm2||x.date.slice(0,7)===fm2||x.status==='bekliyor'||x.status==='lider')&&(!fp||x.partyId===fp)}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0})}
+function xExport(){if(!window.XLSX){toast('Excel kütüphanesi yüklenemedi');return}if(!dl){toast('Bu görünümde indirme kapalı');return}
+  var L=xListe(expsAll.filter(function(x){return coAllowed(coOf(x))&&(!curCo||coOf(x)===curCo)})).slice().reverse();if(!L.length){toast('Aktarılacak masraf yok');return}
+  var d=xSheet(L,1),T=['TOPLAM','',L.length+' kayıt','','','','','',Math.round(isum(L)*100)/100,Math.round(L.reduce(function(s,x){return s+(+x.vat||0)},0)*100)/100];while(T.length<d[0].length)T.push('');d.push(T);
+  var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d),'PERSONEL MASRAFLARI');
+  var fp=$('x_fp').value,pp=fp?parties.filter(function(p){return p.id===fp})[0]:null;
+  dl.save({filename:'MASRAF RAPORU '+($('x_fm').value||'TÜMÜ')+(pp?' '+pp.name:'')+'.xlsx',data:XLSX.write(wb,{bookType:'xlsx',type:'array'})}).then(function(){toast('Excel hazır')}).catch(function(e){if(!e||e.code!=='declined')toast('İndirilemedi')})}
 var exps=[], expLoaded=false, xEdit=null, xPend=null, xsaving=false;
 /* Masrafın müşteriye fatura edilmesi: proje seçilir, fatura müşterisi projeden gelir (projede ayrı fatura müşterisi varsa o) */
 function xPrjCust(p){return p?(p.fparty?{name:p.fparty,id:p.fpartyId||'',code:p.fpartyCode||''}:{name:p.party||'',id:p.partyId||'',code:p.partyCode||''}):null}
@@ -1673,7 +1685,7 @@ function vExp(){
      var cells=ms.map(function(k,j){var v=isum(L.filter(function(x){return x.date.slice(0,7)===k}));G[j]+=v;rt+=v;return '<td class="r">'+(v?fm(v):'–')+'</td>'}).join('');GT+=rt;
      return '<tr><td>'+esc((pp?pp.code+' ':'')+(pp?pp.name:ids[id]))+'</td>'+cells+'<td class="r" style="font-weight:600">'+fm(rt)+'</td><td class="r">'+fm(isum(L.filter(function(x){return !x.paid})))+'</td></tr>'}).join('')+
    '<tr class="tot"><td>TOPLAM</td>'+G.map(function(v){return '<td class="r">'+fm(v)+'</td>'}).join('')+'<td class="r">'+fm(GT)+'</td><td class="r">'+fm(isum(open))+'</td></tr></table></div>'}
-  var fm2=$('x_fm').value,fp=$('x_fp').value,L=xAll.filter(function(x){return (!fm2||x.date.slice(0,7)===fm2||x.status==='bekliyor'||x.status==='lider')&&(!fp||x.partyId===fp)}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
+  var fm2=$('x_fm').value,L=xListe(xAll);
   var bc={};L.forEach(function(x){bc[x.cat||'Diğer']=(bc[x.cat||'Diğer']||0)+(+x.total||0)});
   h+='<h2>Masraf kayıtları'+(fm2?' · '+mname(fm2)+' + onay bekleyenler':'')+'</h2>'+(L.length?'<p class="msg" style="margin:0">Kategoriye göre: '+Object.keys(bc).sort(function(a,b){return bc[b]-bc[a]}).map(function(k){return esc(k)+' '+fm(bc[k])}).join(' · ')+'</p>':'')+
    '<div class="tw"><table><tr><th>Tarih</th><th>Personel</th><th>Açıklama</th><th class="r">Tutar</th><th>Durum</th><th>Ödeme tarihi</th><th>Ödendi</th><th></th></tr>'+
@@ -1683,6 +1695,7 @@ function vExp(){
 document.addEventListener('click',function(e){var t=e.target,a=t.dataset&&t.dataset.act;if(!a)return;
   if(a==='xsave'){xSave();return}
   if(a==='xtumay'){$('x_fm').value='';render();return}
+  if(a==='xxls'){xExport();return}
   if(a==='xclear'){xClear();return}
   if(a==='xread'){xRead();return}
   if(a==='xedit'){var x=expsAll.filter(function(y){return y.id===t.dataset.id})[0];if(!x)return;xClear();xEdit=x.id;$('x_person').value=x.person||'';$('x_date').value=x.date||'';setSel('x_cat',x.cat||lst('exp')[0]);$('x_desc').value=x.desc||'';$('x_vendor').value=x.vendor||'';$('x_no').value=x.no||'';$('x_total').value=fc(x.total);$('x_vat').value=x.vat?fc(x.vat):'';$('x_due').value=x.due||'';$('x_rc').checked=!!x.receipt;$('x_bill').checked=!!x.bill;xPrjFill();$('x_prj').value=x.billPrj||'';xBillSync();$('x_msg').textContent='Düzenleniyor: '+x.person+' '+fd(x.date);$('x_form').scrollIntoView({block:'start'});return}
