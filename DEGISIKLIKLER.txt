@@ -368,3 +368,6 @@ Yeni degisiklikler EN ALTA eklenir.
   - Ekranda gorunen liste (secili ay + onay bekleyenler, secili personel) tek sayfalik Excel olarak iner.
   - Dosyada onay durumu sutunu ve en altta toplam satiri var.
   - Muhasebecinin istegi uzerine. Ustteki genel "Excel'e aktar" eskisi gibi tum veriyi indirir.
+
+[11 Kasim] Test sunucusu ayari
+  - Claude'un onizlemesine gercek veri yerine yalniz test verisiyle calisan ikinci bir sunucu ayari eklendi.

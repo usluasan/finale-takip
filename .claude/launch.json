@@ -6,6 +6,12 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": ["-c", "cd /Users/Hasan/Projects/finale-takip && . veri/yerel-anahtarlar.env && exec node server/server.js"],
       "port": 8090
+    },
+    {
+      "name": "finale-test",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd /Users/Hasan/Projects/finale-takip && . veri/test/test.env && exec node server/server.js"],
+      "port": 8091
     }
   ]
 }
