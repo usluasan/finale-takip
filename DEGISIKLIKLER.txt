@@ -374,3 +374,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [11 Kasim] Surum v0.11.6 Bohr
   - Bu degisiklikle surum v0.11.6 oldu.
+
+[11 Kasim] v0.11.6 canlida
+  - Masraf sekmesindeki Excel dugmesi canli sistemde. Oncesinde veri yedegi alindi.
