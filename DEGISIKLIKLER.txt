@@ -371,3 +371,6 @@ Yeni degisiklikler EN ALTA eklenir.
 
 [11 Kasim] Test sunucusu ayari
   - Claude'un onizlemesine gercek veri yerine yalniz test verisiyle calisan ikinci bir sunucu ayari eklendi.
+
+[11 Kasim] Surum v0.11.6 Bohr
+  - Bu degisiklikle surum v0.11.6 oldu.

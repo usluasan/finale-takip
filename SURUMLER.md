@@ -477,3 +477,17 @@ Kullanıcı ve şirket kontrolleri üst çubukta.
 
 - Test edildi: yerel test verisiyle masaüstü ve telefon. Test edilmedi: canlıda gerçek hesapla, açık tema.
 
+---
+
+## v0.11.6 Bohr — 11 Kasım 2026
+
+Masraf sekmesinde filtreli "Excel'e aktar".
+
+| Commit | Kayıt | Ne |
+|---|---|---|
+| `2cf855f` | C088 | Masraf sekmesinde filtreli Excel'e aktar |
+| `5f5d820` | C089 | Önizlemeye test verisiyle çalışan sunucu ayarı |
+| C090 commit'i (`git log --grep=C090`) | C090 | Sürüm v0.11.6 Bohr — **`v0.11.6` etiketi bu commit üzerinde** |
+
+- Test edildi: yerel test sunucusunda muhasebeci test kullanıcısıyla (tüm aylar, ay süzgeci, genel dışa aktarım değişmedi). Test edilmedi: canlıda gerçek muhasebeci hesabıyla, telefonda.
+

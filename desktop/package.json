@@ -1,6 +1,6 @@
 {
   "name": "finale-takibi",
-  "version": "0.11.5",
+  "version": "0.11.6",
   "description": "Finale Takibi masaüstü uygulaması",
   "main": "main.js",
   "scripts": { "start": "electron .", "dist": "electron-builder" },
